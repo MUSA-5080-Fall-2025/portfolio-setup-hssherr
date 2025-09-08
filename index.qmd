@@ -15,8 +15,10 @@ Advanced spatial analysis and data science for urban planning and public policy.
 - **Final Project:** Capstone modeling challenge
 
 ## About Me
-[Students will customize this section]
+- **Name:** Henry Sywulak-Herr
+- **Background:** Second-Year City Planning student concentrating in STIP. Philly (suburbs) native! Went to Penn for my Undergrad (BA Environmental Science, Minor in Chemistry).
+- **Why I'm Taking This Course:** I want to solidify the modeling background I already have, learn more about data visualization, and how these skills can be applied to a broad range of fields - but primarily transportation :)
 
 ## Contact
-- Email: [your.email@upenn.edu]
-- GitHub: [@your-username]
+- Email: [hssherr@upenn.edu]
+- GitHub: [@hssherr]

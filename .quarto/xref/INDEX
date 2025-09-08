@@ -1,5 +1,11 @@
 {
   "index.qmd": {
     "index.html": "bba9f0d3"
+  },
+  "weekly-notes/week-01-notes.qmd": {
+    "week-01-notes.html": "8d9e97d0"
+  },
+  "instructions_week1.md": {
+    "instructions_week1.html": "52891ac8"
   }
 }

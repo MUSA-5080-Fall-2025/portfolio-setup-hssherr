@@ -3,7 +3,7 @@
     "path": "~/GitHub/portfolio-setup-hssherr/_quarto.yml",
     "project_path": "_quarto.yml",
     "type": "yaml",
-    "hash": "0",
+    "hash": "569893174",
     "contents": "",
     "dirty": false,
     "created": 1757878851814.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "11,26",
+        "cursorPosition": "10,27",
         "scrollLine": "0"
     },
     "folds": "",
-    "lastKnownWriteTime": 1757348382,
+    "lastKnownWriteTime": 1757879421,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1757348382,
+    "last_content_update": 1757879421886,
     "read_only": false,
     "read_only_alternatives": []
 }

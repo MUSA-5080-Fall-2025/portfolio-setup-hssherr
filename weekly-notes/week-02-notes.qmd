@@ -1,0 +1,81 @@
+---
+title: "Week 2 Notes - Intro to Algorithms"
+date: "2025-09-15"
+---
+
+## Algorithms in Public Policy
+- **What are Algorithms?**
+  - Simply, a set of instructions. Typically involve rules and criteria that need to be met to achieve certain outcomes.
+  - Ex. cooking recipes, directions, decision trees, *computer programs that process data to make predictions*
+  - Algorithms (in theory) assist in overcoming the bias of human decision-makers by creating a set rule set
+- **Terminology**
+  - Inputs &rarr; functions, predictors, independent variables, x, etc.
+  - Outputs &rarr; labels, outcomes, dependent variables, y, etc.
+  - Data Science &rarr; computer science/engineering focus on algorithms and methods
+  - Data Analytics &rarr; application of data science methods to other disciplines
+  - Machine Learning &rarr; algorithms for classification and prediction that learn from data
+- **Real-world examples**
+  - Criminal Justice &rarr; recidivism risk scores for bail and sentencing decisions
+  - Housing & Finance &rarr; mortgage lending and tenant screening algorithms
+  - Healthcare &rarr; patient care prioritization and resource allocation
+- **Issues with algorithms**
+  - Inherent bias in the data inputs and how models were created around that biased data 
+
+## Public Sector Context
+- **How Governments Use Data**
+  - Long history of government data collection and a massive amount of public data has become available over the past couple decades
+  - A desire for algorithmic efficiency often results in some actions that are not typically considered desireable (i.e. mass firings to save costs)
+- **Data Analytics Subjectivity**
+  - Every step involves human choices that are inherently subjective 
+    - Ex. Removal/ommission, recoding, how results are interpreted
+  - Healthcare Algorithm Bias Example
+    - An algorithm to identify high-risk patients systematically excluded Black patients
+    - The model used healthcare costs as a proxy for need, but Black patients typically incurred lower costs due to "systemic inequities in access" to healthcare
+      - i.e. Black patients were not treated as often or as extensively, resulting in less healthcare costs overall
+    - Therefore, patients who were more likely to seek/afford treatment were prioritized over those who could not
+  - COMPAS Recidivism Preciction Example
+    - Biased policing patterns producing more Black arrests resulted in an algorithm 2x as likely to falsely flag Black defendants as high risk
+  - Dutch Welfare Fraud Detection Example
+    - Disproportionately targeted vulnerable populations, violated EU privacy laws
+- **Activity in class**
+    - Topic: Graduation Probability
+    - Proxy: GPA
+    - Blind Spot: 
+    - Harm: High-functioning students might encounter a major health event/family-related issue that prevents graduation. Students doing poorly in classes might have a strong support network and simply graduate with a lower GPA.
+    - Guardrail: Potential survey of source of support to judge student health and support network.
+
+## Census Data Foundations
+- Census mandated in the constitution by James Madison to ensure accurate representation in government
+- **Decennial Census vs. American Community Survey**
+  - Decennial Census &rarr; Every 10 years, 9 basic questions (incl. age, race, sex, housing), it's a constitutional requirement, determines political representation
+  - ACS &rarr; 3% of households sampled every year, detailed questions (income, education, employment, housing costs), replaced the old "long form" in 2005
+    - 1-year estimates (areas > 65,000 people) have the most current data, smallest sample size
+    - 5-year estimates (all areas) have more reliable data since it is aggregated across multiple years and has a larger sample
+    - The ACS has a Margin of Error (MOE) that is important to keep an eye on
+      - Large MOE's relative to estimate indicate less reliable values
+- **Census Geographic Hierarchy**
+  - Tract > Block Group > Block
+  - At smaller geographies (i.e. blocks) mathematical noise is added to protect privacy
+    - "Even objective data involves subjective choices about privacy vs. accuracy"
+  - Census boundaries change over time, and historical census data doesn't always match up with modern boundaries
+    - [NHGIS](nhgis.org) provides historical census data with consistent boundaries over time, good for longitudinal studies
+
+## Tidycensus Tips
+- get_acs
+  - Creating a list of c(var_name = "var_code") automatically renames the columns in the resulting df
+
+## Questions & Challenges
+- **What I didn't fully understand**
+  - The nuances of GitHub, but I think I'm getting most of it
+- **Areas needing more practice**
+  - Using GitHub
+
+## Connections to Policy
+- **How this week's content applies to real policy work**
+  - Data manipulation in R will be useful for taking in data from web pages and restructuring it into a format that'll be useful for modeling
+
+## Reflection
+- **What was most interesting**
+  - Learning how to use GitHub and publish our pages
+- **How I'll apply this knowledge**
+  - Using GitHub for collaborative projects in the future

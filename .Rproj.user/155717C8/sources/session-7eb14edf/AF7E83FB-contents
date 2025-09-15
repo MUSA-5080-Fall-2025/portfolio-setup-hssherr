@@ -12,6 +12,14 @@ website:
         menu:
           - href: weekly-notes/week-01-notes.html
             text: Week 1
+          - href: weekly-notes/week-02-notes.html
+            text: Week 2
+      - text: Labs
+        menu:
+          - href: labs/lab0/lab0_template.html
+            text: Lab 0
+          - href: labs/lab1/lab1_template.html
+            text: Lab 1
 
 format:
   html:

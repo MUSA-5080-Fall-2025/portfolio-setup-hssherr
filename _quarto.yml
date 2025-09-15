@@ -8,11 +8,8 @@ website:
     left:
       - href: index.qmd
         text: Home
-      - href: weekly-notes/
+      - href: weekly-notes/week-01-notes.qmd
         text: Weekly Notes
-        menu:
-          - href: weekly-notes/week-01-notes.yml
-            test: Week 1
 
 format:
   html:

@@ -145,8 +145,7 @@ ul.task-list li input[type="checkbox"] {
   <li><a href="#algorithms-in-public-policy" id="toc-algorithms-in-public-policy" class="nav-link active" data-scroll-target="#algorithms-in-public-policy">Algorithms in Public Policy</a></li>
   <li><a href="#public-sector-context" id="toc-public-sector-context" class="nav-link" data-scroll-target="#public-sector-context">Public Sector Context</a></li>
   <li><a href="#census-data-foundations" id="toc-census-data-foundations" class="nav-link" data-scroll-target="#census-data-foundations">Census Data Foundations</a></li>
-  <li><a href="#key-concepts-learned" id="toc-key-concepts-learned" class="nav-link" data-scroll-target="#key-concepts-learned">Key Concepts Learned</a></li>
-  <li><a href="#coding-techniques" id="toc-coding-techniques" class="nav-link" data-scroll-target="#coding-techniques">Coding Techniques</a></li>
+  <li><a href="#tidycensus-tips" id="toc-tidycensus-tips" class="nav-link" data-scroll-target="#tidycensus-tips">Tidycensus Tips</a></li>
   <li><a href="#questions-challenges" id="toc-questions-challenges" class="nav-link" data-scroll-target="#questions-challenges">Questions &amp; Challenges</a></li>
   <li><a href="#connections-to-policy" id="toc-connections-to-policy" class="nav-link" data-scroll-target="#connections-to-policy">Connections to Policy</a></li>
   <li><a href="#reflection" id="toc-reflection" class="nav-link" data-scroll-target="#reflection">Reflection</a></li>
@@ -218,7 +217,7 @@ ul.task-list li input[type="checkbox"] {
 <li>Long history of government data collection and a massive amount of public data has become available over the past couple decades</li>
 <li>A desire for algorithmic efficiency often results in some actions that are not typically considered desireable (i.e.&nbsp;mass firings to save costs)</li>
 </ul></li>
-<li>Data Analytics Subjectivity
+<li><strong>Data Analytics Subjectivity</strong>
 <ul>
 <li>Every step involves human choices that are inherently subjective
 <ul>
@@ -256,41 +255,39 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="census-data-foundations">Census Data Foundations</h2>
 <ul>
 <li>Census mandated in the constitution by James Madison to ensure accurate representation in government</li>
-<li>Decennial Census vs.&nbsp;American Community Survey
+<li><strong>Decennial Census vs.&nbsp;American Community Survey</strong>
 <ul>
 <li>Decennial Census → Every 10 years, 9 basic questions (incl.&nbsp;age, race, sex, housing), it’s a constitutional requirement, determines political representation</li>
-<li>ACS → 3% of households sampled every year, detailed questions (income, education, employment, housing costs), replaced the old “long form” in 2005</li>
+<li>ACS → 3% of households sampled every year, detailed questions (income, education, employment, housing costs), replaced the old “long form” in 2005
+<ul>
+<li>1-year estimates (areas &gt; 65,000 people) have the most current data, smallest sample size</li>
+<li>5-year estimates (all areas) have more reliable data since it is aggregated across multiple years and has a larger sample</li>
+<li>The ACS has a Margin of Error (MOE) that is important to keep an eye on
+<ul>
+<li>Large MOE’s relative to estimate indicate less reliable values</li>
+</ul></li>
+</ul></li>
+</ul></li>
+<li><strong>Census Geographic Hierarchy</strong>
+<ul>
+<li>Tract &gt; Block Group &gt; Block</li>
+<li>At smaller geographies (i.e.&nbsp;blocks) mathematical noise is added to protect privacy
+<ul>
+<li>“Even objective data involves subjective choices about privacy vs.&nbsp;accuracy”</li>
+</ul></li>
+<li>Census boundaries change over time, and historical census data doesn’t always match up with modern boundaries
+<ul>
+<li><a href="nhgis.org">NHGIS</a> provides historical census data with consistent boundaries over time, good for longitudinal studies</li>
+</ul></li>
 </ul></li>
 </ul>
 </section>
-<section id="key-concepts-learned" class="level2">
-<h2 class="anchored" data-anchor-id="key-concepts-learned">Key Concepts Learned</h2>
+<section id="tidycensus-tips" class="level2">
+<h2 class="anchored" data-anchor-id="tidycensus-tips">Tidycensus Tips</h2>
 <ul>
-<li><h2 id="main-concepts-from-lecture" class="anchored"><strong>Main concepts from lecture</strong></h2></li>
-<li><h2 id="technical-skills-covered" class="anchored"><strong>Technical skills covered</strong></h2></li>
-</ul>
-</section>
-<section id="coding-techniques" class="level2">
-<h2 class="anchored" data-anchor-id="coding-techniques">Coding Techniques</h2>
+<li>get_acs
 <ul>
-<li><h2 id="new-r-functions-or-approaches" class="anchored"><strong>New R functions or approaches</strong></h2></li>
-<li><strong>Quarto features learned</strong>
-<ul>
-<li>Various markdown style shortcuts:
-<ul>
-<li>Bold = **</li>
-<li>Italic = *</li>
-<li>Bold/Italic = ***</li>
-<li>Code Text = `</li>
-<li>Lists = -</li>
-<li>Headers = # (x2 or x3)</li>
-<li>Links = [Link text] (link.com)</li>
-</ul></li>
-<li>Rendering the webpage as we make edits
-<ul>
-<li>Changing Global Options in RStudio to render on save</li>
-<li>Using the “Render” button to force rendering updates</li>
-</ul></li>
+<li>Creating a list of c(var_name = “var_code”) automatically renames the columns in the resulting df</li>
 </ul></li>
 </ul>
 </section>

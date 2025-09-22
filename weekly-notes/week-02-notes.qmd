@@ -66,16 +66,16 @@ date: "2025-09-15"
 
 ## Questions & Challenges
 - **What I didn't fully understand**
-  - The nuances of GitHub, but I think I'm getting most of it
+  - I still have lingering technical quirks with Quarto
 - **Areas needing more practice**
-  - Using GitHub
+  - Quarto
 
 ## Connections to Policy
 - **How this week's content applies to real policy work**
-  - Data manipulation in R will be useful for taking in data from web pages and restructuring it into a format that'll be useful for modeling
+  - While algorithms are incredibly useful for streamlining policy-making by creating a standard set of rules and criteria for various forms of decision-making, it's important to keep in mind that the data used to build these models/algorithms and the ways in which they can be deployed can be inherently biased and lead to discriminatory results.
 
 ## Reflection
 - **What was most interesting**
-  - Learning how to use GitHub and publish our pages
+  - Diving more deeply into the terminology of the world of algorithms, as well as learning some more census-related tips that'll be helpful in the future
 - **How I'll apply this knowledge**
-  - Using GitHub for collaborative projects in the future
+  - Improving how I approach the process of model-building and looking more deeply into where sources of potential bias might lie.

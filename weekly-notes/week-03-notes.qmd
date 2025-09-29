@@ -48,14 +48,3 @@ date: "2025-09-15"
 
 ## R Tips from This Week
 - The `regex()` function can generate regex expressions based on a string input.
-
-## Questions & Challenges
-- **What I didn't fully understand**
-- **Areas needing more practice**
-
-## Connections to Policy
-- **How this week's content applies to real policy work**
-
-## Reflection
-- **What was most interesting**
-- **How I'll apply this knowledge**

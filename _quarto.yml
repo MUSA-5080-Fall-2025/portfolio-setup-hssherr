@@ -24,7 +24,7 @@ website:
             text: Lab 1
       - text: Assignments
         menu:
-          - href: assignments/assignment1/assignment1.html
+          - href: assignments/assignment1/assignment1_template.html
             text: "Assignment 1: Census Data Exploration"
 
 format:

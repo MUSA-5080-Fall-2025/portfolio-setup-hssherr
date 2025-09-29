@@ -1,6 +1,6 @@
 ---
-title: "Week 2 Notes - Intro to Algorithms"
-date: "2025-09-15"
+title: "Week 3 Notes - Intro to ggplot"
+date: "2025-09-22"
 ---
 
 ## Data Visualization

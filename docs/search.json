@@ -2,35 +2,35 @@
   {
     "objectID": "weekly-notes/week-03-notes.html",
     "href": "weekly-notes/week-03-notes.html",
-    "title": "Week 2 Notes - Intro to Algorithms",
+    "title": "Week 3 Notes - Intro to ggplot",
     "section": "",
     "text": "Anscombe’s Quartet → four datasets with identical summary statistics, but in various formats (linear, scattered, parabolic, and concentrated)\nVisualizing how data is arranged is just as important as knowing the statistics behind datasets in order to see these differences\n\nSummary statistics can hide critical patterns\nOutliers may represent important communities\nRelationships aren’t always linear\nVisual inspection reveals data quality issues\n\nACS data is inherently unreliable, and bad visualizations have real consequences\n\nMisleading scales/axes\nCherry-picked time periods\nHidden or ignored uncertainty\nMissing context about data reliability"
   },
   {
     "objectID": "weekly-notes/week-03-notes.html#data-visualization",
     "href": "weekly-notes/week-03-notes.html#data-visualization",
-    "title": "Week 2 Notes - Intro to Algorithms",
+    "title": "Week 3 Notes - Intro to ggplot",
     "section": "",
     "text": "Anscombe’s Quartet → four datasets with identical summary statistics, but in various formats (linear, scattered, parabolic, and concentrated)\nVisualizing how data is arranged is just as important as knowing the statistics behind datasets in order to see these differences\n\nSummary statistics can hide critical patterns\nOutliers may represent important communities\nRelationships aren’t always linear\nVisual inspection reveals data quality issues\n\nACS data is inherently unreliable, and bad visualizations have real consequences\n\nMisleading scales/axes\nCherry-picked time periods\nHidden or ignored uncertainty\nMissing context about data reliability"
   },
   {
     "objectID": "weekly-notes/week-03-notes.html#grammar-of-graphics",
     "href": "weekly-notes/week-03-notes.html#grammar-of-graphics",
-    "title": "Week 2 Notes - Intro to Algorithms",
+    "title": "Week 3 Notes - Intro to ggplot",
     "section": "Grammar of Graphics",
     "text": "Grammar of Graphics\n\nWhen making a ggplot, the elements go as follows:\n\nData → what is your dataset?\nAesthetics → what variables map to visual properties?\nGeometries → how do you want to display the data?\nAdditional Layers → scales, themes, facets, annotations, etc.\nBroadly:\n\nggplot(data = your_data) +\n\naes(x = variable1, y = variable2) +\ngeom_something() +\nadditional_layers()\n\n\n\nArguments\n\nx, y → position\ncolor → point/line color\nfill → area fill color\nsize → point/line size\nshape → point shape\nalpha → transparency\nAethetics go inside aes(), constants go outside\nAesthetics are not for decorating, they are for changing data-related elements of your plot (WILL BE ON QUIZ)"
   },
   {
     "objectID": "weekly-notes/week-03-notes.html#exploratory-data-analysis",
     "href": "weekly-notes/week-03-notes.html#exploratory-data-analysis",
-    "title": "Week 2 Notes - Intro to Algorithms",
+    "title": "Week 3 Notes - Intro to ggplot",
     "section": "Exploratory Data Analysis",
     "text": "Exploratory Data Analysis\n\nIt’s like detective work:\n\nWhat does the data look like? (distributions, missing values)\nWhat patterns exist? (relationships, clusters, trends)\nWhat’s unusual? (outliers, anomalies, data quality issues)\nWhat questions does this raise? (hypotheses for further investigation)\nHow reliable is this data?"
   },
   {
     "objectID": "weekly-notes/week-03-notes.html#r-tips-from-this-week",
     "href": "weekly-notes/week-03-notes.html#r-tips-from-this-week",
-    "title": "Week 2 Notes - Intro to Algorithms",
+    "title": "Week 3 Notes - Intro to ggplot",
     "section": "R Tips from This Week",
     "text": "R Tips from This Week\n\nThe regex() function can generate regex expressions based on a string input."
   },
@@ -1790,5 +1790,26 @@
     "title": "Week 2 Notes - Intro to Algorithms",
     "section": "Reflection",
     "text": "Reflection\n\nWhat was most interesting\n\nDiving more deeply into the terminology of the world of algorithms, as well as learning some more census-related tips that’ll be helpful in the future\n\nHow I’ll apply this knowledge\n\nImproving how I approach the process of model-building and looking more deeply into where sources of potential bias might lie."
+  },
+  {
+    "objectID": "weekly-notes/week-04-notes.html",
+    "href": "weekly-notes/week-04-notes.html",
+    "title": "Week 4 Notes - Spatial Analysis in R",
+    "section": "",
+    "text": "Shapefile structure: three primary files (.shp = geometry, .dbf = tabular data, .shx = )\nOn some open data portals, there is a way to directly import spatial layers into R (if it’s an ArcGIS Online site) by going to the bottom “I want to use this” and using the API call."
+  },
+  {
+    "objectID": "weekly-notes/week-04-notes.html#spatial-data-fundamentals",
+    "href": "weekly-notes/week-04-notes.html#spatial-data-fundamentals",
+    "title": "Week 4 Notes - Spatial Analysis in R",
+    "section": "",
+    "text": "Shapefile structure: three primary files (.shp = geometry, .dbf = tabular data, .shx = )\nOn some open data portals, there is a way to directly import spatial layers into R (if it’s an ArcGIS Online site) by going to the bottom “I want to use this” and using the API call."
+  },
+  {
+    "objectID": "weekly-notes/week-04-notes.html#coordinate-reference-systems",
+    "href": "weekly-notes/week-04-notes.html#coordinate-reference-systems",
+    "title": "Week 4 Notes - Spatial Analysis in R",
+    "section": "Coordinate Reference Systems",
+    "text": "Coordinate Reference Systems\n\nThe Earth is round, maps are flat → we can’t preserve area, distance, and angles simultaneously\nAll projections cause some distortions in the true shape of the Earth\nYou cannot use a projection system that uses lat/lon to calculate area\nThe shape of the Earth is a geoid, an imperfect sphere due to terrain\n\nStep 1: Approximate Earth’s shape with an ellipsoid with a uniform surface\nStep 2: Tie the ellipsoid to the real Earth (create a datum)\nStep 3: Overlay your lat/lon grid\n\nNorth American Datum 1927 (NAD27) → centered on Meades Ranch, Kansas\nNAD83 → earth centered\nWGS84 → also earth centered, but uses a different ellipsoid approximation\n*All of these are Geographic (geodetic) coordinate systems that utilize lat/lon\n\nProjecting a 3D Shape onto a 2D shape\n\nCylindrical Projection → wrapping a rectangular sheet around the ellipsoid with its cylindrical axis parallel to the poles (i.e. “Mercator Projection”)\n\nLine of Tangency refers to where a continuous line on the 3D shape aligns entirely with the x axis of the sheet\n\nTransverse Cylindrical → wrapping the cylinder around the ellipsoid, but now the cylindrical axis is parallel to the equatorial plane\nConic projections → wrapping the sheet around in a cone shape with the line of tangency running through the locations you want to study (reduces distortions)\n\nSADD Acronym → things that can be distorted when projecting\n\nShape, Area, Distance, Direction\n\nProjected Coordinate Systems\n\nUTM (Universal Transverse Mercator) → developed by the military by dividing a Mercator Projection into 6 degree segments (60 total)\n\nTypically denoted by a False Northing and a False Easting\n\nState Plane → each state has its own projection method, highly localized (on a global scale) to minimize distortions\n\nTypically conic\nPA has two, one for northern PA and one for southern PA (both in feet/meters)"
   }
 ]

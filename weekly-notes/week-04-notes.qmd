@@ -1,0 +1,36 @@
+---
+title: "Week 4 Notes - Spatial Analysis in R"
+date: "2025-09-29"
+---
+
+## Spatial Data Fundamentals
+- Shapefile structure: three primary files (.shp = geometry, .dbf = tabular data, .shx = )
+- On some open data portals, there is a way to directly import spatial layers into R (if it's an ArcGIS Online site) by going to the bottom "I want to use this" and using the API call.
+
+## Coordinate Reference Systems
+- The Earth is round, maps are flat &rarr; we can't preserve area, distance, and angles simultaneously
+- All projections cause some distortions in the true shape of the Earth
+- You cannot use a projection system that uses lat/lon to calculate area
+- The shape of the Earth is a **geoid**, an imperfect sphere due to terrain
+  - Step 1: Approximate Earth's shape with an **ellipsoid** with a uniform surface
+  - Step 2: Tie the ellipsoid to the real Earth (create a **datum**)
+  - Step 3: Overlay your lat/lon grid
+    - North American Datum 1927 (NAD27) &rarr; centered on Meades Ranch, Kansas
+    - NAD83 &rarr; earth centered
+    - WGS84 &rarr; also earth centered, but uses a different ellipsoid approximation
+    - *All of these are Geographic (geodetic) coordinate systems that utilize lat/lon 
+  - Projecting a 3D Shape onto a 2D shape
+    - Cylindrical Projection &rarr; wrapping a rectangular sheet around the ellipsoid with its cylindrical axis parallel to the poles (i.e. "Mercator Projection")
+      - Line of Tangency refers to where a continuous line on the 3D shape aligns entirely with the x axis of the sheet
+    - Transverse Cylindrical &rarr; wrapping the cylinder around the ellipsoid, but now the cylindrical axis is parallel to the equatorial plane
+    - Conic projections &rarr; wrapping the sheet around in a cone shape with the line of tangency running through the locations you want to study (reduces distortions)
+  - **SADD** Acronym &rarr; things that can be distorted when projecting
+    - Shape, Area, Distance, Direction
+  - Projected Coordinate Systems
+    - UTM (Universal Transverse Mercator) &rarr; developed by the military by dividing a Mercator Projection into 6 degree segments (60 total)
+      - Typically denoted by a **False Northing** and a **False Easting**
+    - State Plane &rarr; each state has its own projection method, highly localized (on a global scale) to minimize distortions
+      - Typically conic
+      - PA has two, one for northern PA and one for southern PA (both in feet/meters)
+- For quiz next week: questions on the "Path of Despair" vs. the "Path of Happiness" when it comes to projecting layers to coordinate systems in R (i.e. use st_crs always unless the layer just does not have a coordinate system)
+    

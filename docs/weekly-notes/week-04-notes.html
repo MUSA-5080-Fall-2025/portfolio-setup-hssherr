@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-09-08">
+<meta name="dcterms.date" content="2025-09-29">
 
-<title>Week 1 Notes - Course Introduction – Henry Sywulak-Herr - MUSA 5080 Portfolio</title>
+<title>Week 4 Notes - Spatial Analysis in R – Henry Sywulak-Herr - MUSA 5080 Portfolio</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -153,11 +153,8 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#key-concepts-learned" id="toc-key-concepts-learned" class="nav-link active" data-scroll-target="#key-concepts-learned">Key Concepts Learned</a></li>
-  <li><a href="#coding-techniques" id="toc-coding-techniques" class="nav-link" data-scroll-target="#coding-techniques">Coding Techniques</a></li>
-  <li><a href="#questions-challenges" id="toc-questions-challenges" class="nav-link" data-scroll-target="#questions-challenges">Questions &amp; Challenges</a></li>
-  <li><a href="#connections-to-policy" id="toc-connections-to-policy" class="nav-link" data-scroll-target="#connections-to-policy">Connections to Policy</a></li>
-  <li><a href="#reflection" id="toc-reflection" class="nav-link" data-scroll-target="#reflection">Reflection</a></li>
+  <li><a href="#spatial-data-fundamentals" id="toc-spatial-data-fundamentals" class="nav-link active" data-scroll-target="#spatial-data-fundamentals">Spatial Data Fundamentals</a></li>
+  <li><a href="#coordinate-reference-systems" id="toc-coordinate-reference-systems" class="nav-link" data-scroll-target="#coordinate-reference-systems">Coordinate Reference Systems</a></li>
   </ul>
 </nav>
     </div>
@@ -166,7 +163,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Week 1 Notes - Course Introduction</h1>
+<h1 class="title">Week 4 Notes - Spatial Analysis in R</h1>
 </div>
 
 
@@ -177,7 +174,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 8, 2025</p>
+      <p class="date">September 29, 2025</p>
     </div>
   </div>
   
@@ -189,87 +186,55 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="key-concepts-learned" class="level2">
-<h2 class="anchored" data-anchor-id="key-concepts-learned">Key Concepts Learned</h2>
+<section id="spatial-data-fundamentals" class="level2">
+<h2 class="anchored" data-anchor-id="spatial-data-fundamentals">Spatial Data Fundamentals</h2>
 <ul>
-<li><strong>Main concepts from lecture</strong>
-<ul>
-<li>Basic functionalities of GitHub</li>
-<li>Introduction to Quarto as a presentation tool</li>
-<li>Use cases of R for Public Policy Analytics</li>
-</ul></li>
-<li><strong>Technical skills covered</strong>
-<ul>
-<li>Committing, Pushing changes to, and Pulling changes from a repository in GitHub</li>
-<li>Introductory data manipulation functions in R</li>
-</ul></li>
+<li>Shapefile structure: three primary files (.shp = geometry, .dbf = tabular data, .shx = )</li>
+<li>On some open data portals, there is a way to directly import spatial layers into R (if it’s an ArcGIS Online site) by going to the bottom “I want to use this” and using the API call.</li>
 </ul>
 </section>
-<section id="coding-techniques" class="level2">
-<h2 class="anchored" data-anchor-id="coding-techniques">Coding Techniques</h2>
+<section id="coordinate-reference-systems" class="level2">
+<h2 class="anchored" data-anchor-id="coordinate-reference-systems">Coordinate Reference Systems</h2>
 <ul>
-<li><strong>New R functions or approaches</strong>
+<li>The Earth is round, maps are flat → we can’t preserve area, distance, and angles simultaneously</li>
+<li>All projections cause some distortions in the true shape of the Earth</li>
+<li>You cannot use a projection system that uses lat/lon to calculate area</li>
+<li>The shape of the Earth is a <strong>geoid</strong>, an imperfect sphere due to terrain
 <ul>
-<li><em>filter</em> → subset rows</li>
-<li><em>select</em> → subset columns</li>
-<li><em>mutate</em> → create new variable columns</li>
-<li><em>summarize</em> → perform operations on a grouped dataframe</li>
-<li><em>group_by</em> → create a grouped dataframe based on a column</li>
-<li><em>rename</em> → rename columns (use `newname`)</li>
-<li><em>%&gt;%</em> (Piping) → tidyverse method of passing function outputs to another function</li>
+<li>Step 1: Approximate Earth’s shape with an <strong>ellipsoid</strong> with a uniform surface</li>
+<li>Step 2: Tie the ellipsoid to the real Earth (create a <strong>datum</strong>)</li>
+<li>Step 3: Overlay your lat/lon grid
+<ul>
+<li>North American Datum 1927 (NAD27) → centered on Meades Ranch, Kansas</li>
+<li>NAD83 → earth centered</li>
+<li>WGS84 → also earth centered, but uses a different ellipsoid approximation</li>
+<li>*All of these are Geographic (geodetic) coordinate systems that utilize lat/lon</li>
 </ul></li>
-<li><strong>Quarto features learned</strong>
+<li>Projecting a 3D Shape onto a 2D shape
 <ul>
-<li>Various markdown style shortcuts:
+<li>Cylindrical Projection → wrapping a rectangular sheet around the ellipsoid with its cylindrical axis parallel to the poles (i.e.&nbsp;“Mercator Projection”)
 <ul>
-<li>Bold = **</li>
-<li>Italic = *</li>
-<li>Bold/Italic = ***</li>
-<li>Code Text = `</li>
-<li>Lists = -</li>
-<li>Headers = # (x2 or x3)</li>
-<li>Links = [Link text] (link.com)</li>
+<li>Line of Tangency refers to where a continuous line on the 3D shape aligns entirely with the x axis of the sheet</li>
 </ul></li>
-<li>Rendering the webpage as we make edits
+<li>Transverse Cylindrical → wrapping the cylinder around the ellipsoid, but now the cylindrical axis is parallel to the equatorial plane</li>
+<li>Conic projections → wrapping the sheet around in a cone shape with the line of tangency running through the locations you want to study (reduces distortions)</li>
+</ul></li>
+<li><strong>SADD</strong> Acronym → things that can be distorted when projecting
 <ul>
-<li>Changing Global Options in RStudio to render on save</li>
-<li>Using the “Render” button to force rendering updates</li>
+<li>Shape, Area, Distance, Direction</li>
+</ul></li>
+<li>Projected Coordinate Systems
+<ul>
+<li>UTM (Universal Transverse Mercator) → developed by the military by dividing a Mercator Projection into 6 degree segments (60 total)
+<ul>
+<li>Typically denoted by a <strong>False Northing</strong> and a <strong>False Easting</strong></li>
+</ul></li>
+<li>State Plane → each state has its own projection method, highly localized (on a global scale) to minimize distortions
+<ul>
+<li>Typically conic</li>
+<li>PA has two, one for northern PA and one for southern PA (both in feet/meters)</li>
 </ul></li>
 </ul></li>
-</ul>
-</section>
-<section id="questions-challenges" class="level2">
-<h2 class="anchored" data-anchor-id="questions-challenges">Questions &amp; Challenges</h2>
-<ul>
-<li><strong>What I didn’t fully understand</strong>
-<ul>
-<li>The nuances of GitHub, but I think I’m getting most of it</li>
-</ul></li>
-<li><strong>Areas needing more practice</strong>
-<ul>
-<li>Using GitHub</li>
-</ul></li>
-</ul>
-</section>
-<section id="connections-to-policy" class="level2">
-<h2 class="anchored" data-anchor-id="connections-to-policy">Connections to Policy</h2>
-<ul>
-<li><strong>How this week’s content applies to real policy work</strong>
-<ul>
-<li>Data manipulation in R will be useful for taking in data from web pages and restructuring it into a format that’ll be useful for modeling</li>
-</ul></li>
-</ul>
-</section>
-<section id="reflection" class="level2">
-<h2 class="anchored" data-anchor-id="reflection">Reflection</h2>
-<ul>
-<li><strong>What was most interesting</strong>
-<ul>
-<li>Learning how to use GitHub and publish our pages</li>
-</ul></li>
-<li><strong>How I’ll apply this knowledge</strong>
-<ul>
-<li>Using GitHub for collaborative projects in the future</li>
 </ul></li>
 </ul>
 

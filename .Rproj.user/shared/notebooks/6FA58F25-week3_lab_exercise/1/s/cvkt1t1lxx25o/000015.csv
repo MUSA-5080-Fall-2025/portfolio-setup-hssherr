@@ -1,0 +1,12 @@
+"0","ggplot(data = county_data) +
+  aes(x = median_ageE, y = median_incomeE) +
+  geom_point(fill = ""red"", alpha = 0.5) +
+  geom_smooth(method = ""loess"", se = T, color = ""grey95"") +
+  labs(title = ""Median Age vs. Median Income of Pennsylvania Counties"", 
+       x = ""Median Income (k$)"",
+       y = ""Median Age (yrs)"") +
+  theme_dark() +
+  scale_x_continuous(labels = dollar)
+"
+"1","[38;5;253m`geom_smooth()` using formula = 'y ~ x'[39m
+"

@@ -1,0 +1,18 @@
+"0","# Enhanced scatter plot with trend line
+ggplot(county_data) +
+  aes(x = total_popE, y = median_incomeE) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(method = ""lm"", se = TRUE, color = ""red"") +
+  labs(
+    title = ""Population vs Median Income in Pennsylvania Counties"",
+    subtitle = ""2018-2022 ACS 5-Year Estimates"",
+    x = ""Total Population"",
+    y = ""Median Household Income ($)"",
+    caption = ""Source: U.S. Census Bureau""
+  ) +
+  theme_minimal() +
+  scale_x_continuous(labels = comma) +
+  scale_y_continuous(labels = dollar)
+"
+"1","[38;5;253m`geom_smooth()` using formula = 'y ~ x'[39m
+"

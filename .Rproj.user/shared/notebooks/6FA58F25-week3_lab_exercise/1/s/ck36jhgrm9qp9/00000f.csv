@@ -1,0 +1,15 @@
+"0","# Log-transformed scatter plot
+ggplot(county_data) +
+  aes(x = log(total_popE), y = median_incomeE) +
+  geom_point(alpha = 0.7) +
+  geom_smooth(method = ""lm"", se = TRUE) +
+  labs(
+    title = ""Log(Population) vs Median Income"",
+    x = ""Log(Total Population)"",
+    y = ""Median Household Income ($)""
+  ) +
+  theme_minimal() +
+  scale_y_continuous(labels = dollar)
+"
+"1","[38;5;253m`geom_smooth()` using formula = 'y ~ x'[39m
+"

@@ -1,0 +1,446 @@
+---
+title: "Assignment 1: Census Data Quality for Policy Decisions"
+subtitle: "Evaluating Data Reliability for Algorithmic Decision-Making"
+author: "Henry Sywulak-Herr"
+date: today
+format: 
+  html:
+    code-fold: false
+    toc: true
+    toc-location: left
+    theme: cosmo
+execute:
+  warning: false
+  message: false
+---
+
+# Assignment Overview
+
+## Scenario
+
+You are a data analyst for the **Vermont Department of Human Services**. The department is considering implementing an algorithmic system to identify communities that should receive priority for social service funding and outreach programs. Your supervisor has asked you to evaluate the quality and reliability of available census data to inform this decision.
+
+Drawing on our Week 2 discussion of algorithmic bias, you need to assess not just what the data shows, but how reliable it is and what communities might be affected by data quality issues.
+
+## Learning Objectives
+
+- Apply dplyr functions to real census data for policy analysis
+- Evaluate data quality using margins of error 
+- Connect technical analysis to algorithmic decision-making
+- Identify potential equity implications of data reliability issues
+- Create professional documentation for policy stakeholders
+
+## Submission Instructions
+
+**Submit by posting your updated portfolio link on Canvas.** Your assignment should be accessible at `your-portfolio-url/assignments/assignment_1/`
+
+Make sure to update your `_quarto.yml` navigation to include this assignment under an "Assignments" menu.
+
+# Part 1: Portfolio Integration
+
+Create this assignment in your portfolio repository under an `assignments/assignment_1/` folder structure. Update your navigation menu to include:
+
+```
+- text: Assignments
+  menu:
+    - href: assignments/assignment_1/your_file_name.qmd
+      text: "Assignment 1: Census Data Exploration"
+```
+If there is a special character like comma, you need use double quote mark so that the quarto can identify this as text
+
+# Setup
+
+```{r setup}
+# Load required packages (hint: you need tidycensus, tidyverse, and knitr)
+library(pacman)
+p_load(tidyverse, tidycensus, knitr)
+# Set your Census API key
+
+# I already have it installed and saved in R
+key <- Sys.getenv("CENSUS_API_KEY")
+
+# Choose your state for analysis - assign it to a variable called my_state
+my_state <- "VT"
+
+```
+
+**State Selection:** I chose **Vermont (VT)** for this analysis since Maine, as a northern New England state has distinctive characteristics when it comes to geography and population distribution. The state's abundant natural resources have lead to scattered patterns of development in the northern portions of the state, with the largest population centers to the west along Lake Champlain in cities such as Burlington.
+
+# Part 2: County-Level Resource Assessment
+
+## 2.1 Data Retrieval
+
+**Your Task:** Use `get_acs()` to retrieve county-level data for your chosen state.
+
+**Requirements:**
+- Geography: county level
+- Variables: median household income (B19013_001) and total population (B01003_001)  
+- Year: 2022
+- Survey: acs5
+- Output format: wide
+
+**Hint:** Remember to give your variables descriptive names using the `variables = c(name = "code")` syntax.
+
+```{r county-data}
+# Write your get_acs() code here
+
+vt_data1 <- get_acs(state = my_state,
+                    geography = "county",
+                    variables = c("med_hh_inc" = "B19013_001",
+                                  "tot_pop" = "B01003_001"),
+                    year = 2022,
+                    survey = "acs5",
+                    output = "wide")
+
+# Clean the county names to remove state name and "County"
+vt_data1_trim <- vt_data1 %>% 
+  mutate(NAME = str_remove(NAME, " County, Vermont"))
+
+# Hint: use mutate() with str_remove()
+
+# Display the first few rows
+vt_data1_trim %>% head(5)
+```
+
+## 2.2 Data Quality Assessment
+
+**Your Task:** Calculate margin of error percentages and create reliability categories.
+
+**Requirements:**
+- Calculate MOE percentage: (margin of error / estimate) * 100
+- Create reliability categories:
+  - High Confidence: MOE < 5%
+  - Moderate Confidence: MOE 5-10%  
+  - Low Confidence: MOE > 10%
+- Create a flag for unreliable estimates (MOE > 10%)
+
+**Hint:** Use `mutate()` with `case_when()` for the categories.
+
+```{r income-reliability}
+# Calculate MOE percentage and reliability categories using mutate()
+vt_data1_MOEpct <- vt_data1_trim %>%
+  mutate(med_hh_inc_Mpct = med_hh_incM/med_hh_incE * 100,
+         med_hh_inc_conf = case_when(med_hh_inc_Mpct < 5 ~ "High Confidence",
+                                     med_hh_inc_Mpct >= 5 & med_hh_inc_Mpct <= 10 ~ "Moderate Confidence",
+                                     med_hh_inc_Mpct > 10 ~ "Low Confidence",
+                                     .default = NA))
+# Create a summary showing count of counties in each reliability category
+vt_data1_reliability <- vt_data1_MOEpct %>% 
+  group_by(med_hh_inc_conf) %>% 
+  summarize(count = n())
+
+vt_data1_reliability
+
+# Hint: use count() and mutate() to add percentages
+```
+
+## 2.3 High Uncertainty Counties
+
+**Your Task:** Identify the 5 counties with the highest MOE percentages.
+
+**Requirements:**
+- Sort by MOE percentage (highest first)
+- Select the top 5 counties
+- Display: county name, median income, margin of error, MOE percentage, reliability category
+- Format as a professional table using `kable()`
+
+**Hint:** Use `arrange()`, `slice()`, and `select()` functions.
+
+```{r high-uncertainty}
+# Create table of top 5 counties by MOE percentage
+vt_data1_top5Mpct <- vt_data1_MOEpct %>%
+  arrange(desc(med_hh_inc_Mpct)) %>%
+  slice_head(n = 5) %>%
+  select(-c(GEOID, tot_popM))
+
+# Format as table with kable() - include appropriate column names and caption
+kable(vt_data1_top5Mpct, format = "html")
+
+```
+<br>
+**Data Quality Commentary:**
+
+*[Write 2-3 sentences explaining what these results mean for algorithmic decision-making. Consider: Which counties might be poorly served by algorithms that rely on this income data? What factors might contribute to higher uncertainty?]* <br>
+<br>
+Counties that have a high MOE percent have greater uncertainty in their estimates, likely due to sampling issues (possibly due to relatively low county population) or deriving from how the results are aggregated over multiple years (though this is less of an issue for the ACS5 as it is for the ACS1 or ACS3). Algorithms that are trained/rely on ACS5 income data for Maine could more readily over- or underestimate the actual median household income in counties such as Waldo, Lincoln, Knox, and others that have a high MOE percentage relative to the estimate.
+
+# Part 3: Neighborhood-Level Analysis
+
+## 3.1 Focus Area Selection
+
+**Your Task:** Select 2-3 counties from your reliability analysis for detailed tract-level study.
+
+**Strategy:** Choose counties that represent different reliability levels (e.g., 1 high confidence, 1 moderate, 1 low confidence) to compare how data quality varies.
+
+```{r select-counties}
+# Use filter() to select 2-3 counties from your county_reliability data
+# Store the selected counties in a variable called selected_counties
+
+# some counties produced 
+selected_counties <- vt_data1_MOEpct %>% 
+  group_by(med_hh_inc_conf) %>% 
+  slice(1) %>% 
+  ungroup()
+
+# Display the selected counties with their key characteristics
+# Show: county name, median income, MOE percentage, reliability category
+
+kable(selected_counties %>% select(-c(GEOID, tot_popM)),
+      col.names = c("County", "Median HH Income", "Margin of Error", "Total Population", "MOE Percent", "Confidence Ranking"),
+      format.args = list(round(3)))
+```
+
+**Comment on the output:** [write something :)] <br>
+<br>
+While Addison and Grand Isle counties have similar median household incomes (~$86k), the reliability of their estimates differs significantly (Addison MOE Pct = 3.4%, Grand Isle MOE Pct = 12.4%). The large difference in population between Addison county (~37k people) and Great Isle County (~7k people) likely factored into this difference in reliability.
+
+## 3.2 Tract-Level Demographics
+
+**Your Task:** Get demographic data for census tracts in your selected counties.
+
+**Requirements:**
+- Geography: tract level
+- Variables: white alone (B03002_003), Black/African American (B03002_004), Hispanic/Latino (B03002_012), total population (B03002_001)
+- Use the same state and year as before
+- Output format: wide
+- **Challenge:** You'll need county codes, not names. Look at the GEOID patterns in your county data for hints.
+
+```{r tract-demographics}
+# Define your race/ethnicity variables with descriptive names
+demo_vars <- c("race_white" = "B03002_003", 
+               "race_black" = "B03002_004", 
+               "race_hispLatino" = "B03002_012", 
+               "tot_pop" = "B03002_001")
+# define counties to be selected
+my_counties <- str_remove(selected_counties$GEOID, "50")
+
+# Use get_acs() to retrieve tract-level data
+vt_data2 <- get_acs(geography = "tract", 
+                    variables = demo_vars,
+                    year = 2022, 
+                    output = "wide", 
+                    state = my_state,
+                    county = my_counties)
+
+# Hint: You may need to specify county codes in the county parameter
+
+# Add readable tract and county name columns using str_extract() or similar
+vt_data2_sep <- vt_data2 %>%
+  separate(NAME,
+           into = c("TRACT", "COUNTY", "STATE"),
+           sep = "; ",
+           remove = T) %>% 
+  mutate(TRACT = parse_number(TRACT),
+         COUNTY = sub(x = COUNTY, " County", ""))
+# Calculate percentage of each group using mutate()
+# Create percentages for white, Black, and Hispanic populations
+vt_data2_pcts <- vt_data2_sep %>%
+  mutate(white_pct = (race_whiteE/tot_popE)*100,
+         black_pct = (race_blackE/tot_popE)*100,
+         hispLatino_pct = (race_hispLatinoE/tot_popE)*100)
+
+```
+
+## 3.3 Demographic Analysis
+
+**Your Task:** Analyze the demographic patterns in your selected areas.
+
+```{r demographic-analysis}
+# Find the tract with the highest percentage of Hispanic/Latino residents
+vt_data2_hiPctHispLat <- vt_data2_pcts %>% filter(hispLatino_pct == max(hispLatino_pct))
+paste0("County with the Maximum Hispanic/Latino Percentage: ", vt_data2_hiPctHispLat$COUNTY, " County")
+# Hint: use arrange() and slice() to get the top tract
+
+# Calculate average demographics by county using group_by() and summarize()
+vt_data2_avgDemo <- vt_data2_pcts %>% 
+  group_by(COUNTY) %>% 
+  summarise(tract_count = n(),
+            avg_white_pct = sum(race_whiteE)/sum(tot_popE)*100,
+            avg_black_pct = sum(race_blackE)/sum(tot_popE)*100,
+            avg_hispLatino_pct = sum(race_hispLatinoE)/sum(tot_popE)*100)
+
+# Show: number of tracts, average percentage for each racial/ethnic group
+# Create a nicely formatted table of your results using kable()
+kable(vt_data2_avgDemo, col.names = c("County", "Tract Count", "Avg White Pct", "Avg Black Pct", "Avg Hispanic/Latino Pct"),
+      format.args = list(round(3)))
+```
+
+# Part 4: Comprehensive Data Quality Evaluation
+
+## 4.1 MOE Analysis for Demographic Variables
+
+**Your Task:** Examine margins of error for demographic variables to see if some communities have less reliable data.
+
+**Requirements:**
+- Calculate MOE percentages for each demographic variable
+- Flag tracts where any demographic variable has MOE > 15%
+- Create summary statistics
+
+```{r demographic-moe}
+# Calculate MOE percentages for white, Black, and Hispanic variables
+vt_data2_MOEpct <- vt_data2_sep %>%
+  mutate(race_white_Mpct = (race_whiteM/race_whiteE)*100,
+         race_black_Mpct = race_blackM/race_blackE*100,
+         race_hispLatinoMpct = race_hispLatinoM/race_hispLatinoE*100)
+         
+# Hint: use the same formula as before (margin/estimate * 100)
+
+# Create a flag for tracts with high MOE on any demographic variable
+vt_data2_reliability <- vt_data2_MOEpct %>% 
+  mutate(race_all_conf = ifelse(race_white_Mpct > 15 | race_black_Mpct > 15 | race_hispLatinoMpct > 15, 1, 0))
+
+# Use logical operators (| for OR) in an ifelse() statement
+
+# Create summary statistics showing how many tracts have data quality issues
+data.frame(total_tracts = length(vt_data2_reliability$race_all_conf),
+           flagged_tracts = sum(vt_data2_reliability$race_all_conf),
+           flagger_tracts_pct = sum(vt_data2_reliability$race_all_conf)/length(vt_data2_reliability$race_all_conf)*100)
+```
+
+## 4.2 Pattern Analysis
+
+**Your Task:** Investigate whether data quality problems are randomly distributed or concentrated in certain types of communities.
+
+```{r pattern-analysis}
+# Group tracts by whether they have high MOE issues
+# Calculate average characteristics for each group:
+# - population size, demographic percentages
+# Use group_by() and summarize() to create this comparison
+# Create a professional table showing the patterns
+
+MOE_issue_stats <- vt_data2_reliability %>%
+  group_by(race_all_conf) %>% 
+  summarise(avg_pop = mean(tot_popE),
+            avg_white_pct = sum(race_whiteE)/sum(tot_popE)*100,
+            avg_black_pct = sum(race_blackE)/sum(tot_popE)*100,
+            avg_hispLatino_pct = sum(race_hispLatinoE)/sum(tot_popE)*100)
+
+kable(MOE_issue_stats, col.names = c("Confidence Category", "Avg Tract Pop", "Avg White Pct", "Avg Black Pct", "Avg Hispanic/Latino Pop"),
+      format.args = list(round(3)))
+```
+
+**Pattern Analysis:** [Describe any patterns you observe. Do certain types of communities have less reliable data? What might explain this?]
+
+The selected Vermont counties - Addison, Essex, and Grand Isle - have such low proportions of Black and Hispanic/Latino residents that no tested census tract has a margin of error percent below 15 across all race categories (I ran the analysis with two additional counties and saw a similar pattern). Many of the census tracts even have margins of error greater than their corresponding estimates. This will inherently limit the viability of data for certain race categories within Vermont. The average population across all flagged census tract was just shy of 3400. Since every tract was flagged, this value is equal to the average population across all examined census tracts, indicating that Vermont's low population outside of city centers also contributes to increased unreliability of estimates.
+
+# Part 5: Policy Recommendations
+
+## 5.1 Analysis Integration and Professional Summary
+
+**Your Task:** Write an executive summary that integrates findings from all four analyses.
+
+**Executive Summary Requirements:**
+1. **Overall Pattern Identification**: What are the systematic patterns across all your analyses?
+2. **Equity Assessment**: Which communities face the greatest risk of algorithmic bias based on your findings?
+3. **Root Cause Analysis**: What underlying factors drive both data quality issues and bias risk?
+4. **Strategic Recommendations**: What should the Department implement to address these systematic issues?
+
+**Executive Summary:**
+
+[Your integrated 4-paragraph summary here]
+
+Five of the fourteen counties in Vermont have a median household income higher greater than the estimate for median household income at the national level in 2022 ($74,580, according to the Census Bureau). When comparing margin of error percents (calculated as the margin of error divided by the estimate value), median household income estimates at the county level proved to be reasonably reliable, with nine of the fourteen counties having MOE percent values below 5 percent. However, race-categorized population estimates at the census tract level for non-white racial groups proved to have much larger MOE percent values - some as much as 300 percent of the estimate - which indicates far less reliable estimate values.
+
+Minority communities in Vermont face the greatest risk of algorithmic bias, as their populations are theoretically too low within the state for a survey such as the ACS5 to produce accurate, viable estimates for their populations. Any model built off of this data will have likely have a bias towards white residents of the state and further exacerbate disparities in social service funding and outreach program allocation.
+
+Low population in certain non-urban counties in Vermont and generally low population proportions of racial minorities in these counties are the largest contributing factors to data quality issues and bias risk in this analysis. Across all census tracts within Addison, Essex, and Grand Isle counties in Vermont, the total census tract population ranged from 1089 to 5197, a difference that likely contributed to varying qualities of each tract's sample. Despite averaging samples over 5 years, the ACS5 still is a generally poor method of estimating very small values for specific variables.
+
+It is recommended that more concrete data estimates for the populations of racial and ethnic minorities be obtained for the state of Vermont, which could be accomplished either through utilizing more accurate estimation methods (i.e. the Decennial Census), though this has limitations since our analysis year is 2022. Population values at the tract level from the Decennial Census between the years 2010 and 2020 could be used to project into 2030 in order to obtain values for 2022. Step-Down projection methods using population trends at the county or state level could also be utilized to improve predictions.
+
+
+## 6.3 Specific Recommendations
+
+**Your Task:** Create a decision framework for algorithm implementation.
+
+```{r recommendations-data}
+# Create a summary table using your county reliability data
+# Include: county name, median income, MOE percentage, reliability category
+# Add a new column with algorithm recommendations using case_when():
+# - High Confidence: "Safe for algorithmic decisions"
+# - Moderate Confidence: "Use with caution - monitor outcomes"  
+# - Low Confidence: "Requires manual review or additional data"
+
+county_table <- vt_data1_MOEpct %>%
+  select(-c(GEOID, med_hh_incM, tot_popE, tot_popM)) %>% 
+  mutate(algthm_rec = case_when(med_hh_inc_conf == "High Confidence" ~ "Safe for algorithmic decisions",
+                                med_hh_inc_conf == "Moderate Confidence" ~ "Use with caution - monitor outcomes",
+                                med_hh_inc_conf == "Low Confidence" ~ "Requires manual review or additional data"))
+  
+
+# Format as a professional table with kable()
+kable(county_table,
+      col.names = c("County", "Median HH Income", "MOE Pct", "Confidence Rating", "Algorithm Recommendation"),
+      format.args = list(round(3)))
+```
+
+**Key Recommendations:**
+
+**Your Task:** Use your analysis results to provide specific guidance to the department.
+
+1. **Counties suitable for immediate algoLarithmic implementation:** [List counties with high confidence data and explain why they're appropriate]
+- Addison
+- Bennington
+- Caledonia
+- Chittenden
+- Orange
+- Orleans
+- Rutland
+- Washington
+- Windsor
+
+These counties have a Margin of Error percent below 5, which indicates that their estimates are large enough relative to their Margin of Error as to be considered a stable, reasonably representative value of the population.
+
+2. **Counties requiring additional oversight:** [List counties with moderate confidence data and describe what kind of monitoring would be needed]
+- Essex
+- Franklin
+- Lamoille
+- Windham
+
+Since these counties have a slightly larger MOE percent, they are less concrete of an estimate of median household income and thus could require supplemental information or intense monitoring of the results. This could take the form of an annual/biannual/monthly equity review to assess the demographics of individuals being served directly by any improvements to social service funding and outreach programs allocation.
+
+3. **Counties needing alternative approaches:** [List counties with low confidence data and suggest specific alternatives - manual review, additional surveys, etc.]
+
+- Grand Isle
+
+This could take the form of a dedicated survey of household income in Vermont that is more comprehensive than that of the ACS5, or developing adjustments/weights to make up for the lack of information in Vermont based on similar states that have more reliable estimates.
+
+
+## Questions for Further Investigation
+
+[List 2-3 questions that your analysis raised that you'd like to explore further in future assignments. Consider questions about spatial patterns, time trends, or other demographic factors.]
+
+1. What are the underlying contributing factors for the dominance of white residents in Vermont?
+2. As a continuation of a previous suggestion: how would introducing something such as a population projection (inherent uncertainty) based on decennial census data (decently reliable in itself) contribute to/detract from this analysis?
+
+# Technical Notes
+
+**Data Sources:** 
+- U.S. Census Bureau, American Community Survey 2018-2022 5-Year Estimates
+- Retrieved via tidycensus R package on 9/28/2025
+
+**Reproducibility:** 
+- All analysis conducted in R version [your version]
+- Census API key required for replication
+- Complete code and documentation available at: [your portfolio URL]
+
+**Methodology Notes:**
+[Describe any decisions you made about data processing, county selection, or analytical choices that might affect reproducibility]
+
+**Limitations:**
+[Note any limitations in your analysis - sample size issues, geographic scope, temporal factors, etc.]
+
+---
+
+## Submission Checklist
+
+Before submitting your portfolio link on Canvas:
+
+- [ ] All code chunks run without errors
+- [ ] All "[Fill this in]" prompts have been completed
+- [ ] Tables are properly formatted and readable
+- [ ] Executive summary addresses all four required components
+- [ ] Portfolio navigation includes this assignment
+- [ ] Census API key is properly set 
+- [ ] Document renders correctly to HTML
+
+**Remember:** Submit your portfolio URL on Canvas, not the file itself. Your assignment should be accessible at `your-portfolio-url/assignments/assignment_1/your_file_name.html`

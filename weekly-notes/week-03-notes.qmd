@@ -1,0 +1,61 @@
+---
+title: "Week 2 Notes - Intro to Algorithms"
+date: "2025-09-15"
+---
+
+## Data Visualization
+- Anscombe's Quartet &rarr; four datasets with identical summary statistics, but in various formats (linear, scattered, parabolic, and concentrated)
+- Visualizing how data is arranged is just as important as knowing the statistics behind datasets in order to see these differences
+  - Summary statistics can hide critical patterns
+  - Outliers may represent important communities
+  - Relationships aren’t always linear
+  - Visual inspection reveals data quality issues
+- ACS data is inherently unreliable, and bad visualizations have real consequences
+  - Misleading scales/axes
+  - Cherry-picked time periods
+  - Hidden or ignored uncertainty
+  - Missing context about data reliability
+
+## Grammar of Graphics
+- When making a ggplot, the elements go as follows:
+  - Data &rarr; what is your dataset?
+  - Aesthetics &rarr; what variables map to visual properties?
+  - Geometries &rarr; how do you want to display the data?
+  - Additional Layers &rarr; scales, themes, facets, annotations, etc.
+  - Broadly:
+    - ggplot(data = your_data) +
+      - aes(x = variable1, y = variable2) +
+      - geom_something() +
+      - additional_layers()
+  
+- Arguments
+  - x, y &rarr; position
+  - color &rarr; point/line color
+  - fill &rarr; area fill color
+  - size &rarr; point/line size
+  - shape &rarr; point shape
+  - alpha &rarr; transparency
+  - **Aethetics go inside `aes()`, constants go outside**
+  - Aesthetics are not for decorating, they are for changing data-related elements of your plot (WILL BE ON QUIZ)
+
+## Exploratory Data Analysis
+- It's like detective work:
+  - What does the data look like? (distributions, missing values)
+  - What patterns exist? (relationships, clusters, trends)
+  - What’s unusual? (outliers, anomalies, data quality issues)
+  - What questions does this raise? (hypotheses for further investigation)
+  - How reliable is this data?
+
+## R Tips from This Week
+- The `regex()` function can generate regex expressions based on a string input.
+
+## Questions & Challenges
+- **What I didn't fully understand**
+- **Areas needing more practice**
+
+## Connections to Policy
+- **How this week's content applies to real policy work**
+
+## Reflection
+- **What was most interesting**
+- **How I'll apply this knowledge**

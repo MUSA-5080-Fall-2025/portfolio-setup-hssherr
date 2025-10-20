@@ -1,0 +1,16 @@
+---
+title: "Week 5 Notes - Linear Regression"
+date: "2025-10-06"
+---
+
+## Topics Discussed
+- Root Mean Squared Error &rarr;
+- MAE
+- Cross Validation
+- Train/Testing Dataset
+- Linear Regression Basics
+- Independent Variables NOT collinear
+- VIF (<5-10)
+- Constant Variance (Heteroscedasticity)
+- Outliers (Cooks Distance)
+- Normality of Residuals

@@ -1,0 +1,61 @@
+---
+title: "Week 6 Notes - Spatial Machine Learning & Advanced Regression"
+date: "2025-10-13"
+---
+
+## Improving Models with Spatial Features
+- Data that varies spatially can be improved by taking location into account
+  - Taking proximity to downtown, nearby school quality, neighborhood characteristics, etc.
+  - Helps control for neighborhood elements (**fixed effects**)
+- Converting csv files to spatial datasets
+  - The difference between the geographic coordinate systems WGS84 and NAD83 is minimal
+  - Using WGS84 as the default is usually acceptable for planning analysis
+  - For engineering, you should know EXACTLY which coordinate system it was coded to
+- Classed maps in R are typically easier to interpret than continuous (default in R)
+  - Check lecture code for examples on how to make one
+
+## Categorical Variables
+- One is chosen as the reference category, all other classes are compared to the reference category
+  - In R, the first alphabetical category is chosen by default
+  - This can be changed by setting the levels of the column
+- Examples: neighborhood, neighborhood income category, housing quality category, etc.
+
+## Interaction Terms
+- Ex. square footage makes housing prices go up faster in wealthier neighborhoods than in lower income neighborhoods (different slopes of price vs. sq footage)
+- Interaction terms between continuous and categorical variables allow you to control for this difference.
+- Policy Implications
+  - Different market segments produce differing effects
+  - Interaction terms amplify inequalities (large homes in wealthy areas are priced much higher while lower income areas have their home prices )
+  
+## Non-Linear Modeling
+- Polynomial regression
+  - When straight lines don't fit your data
+    - Curved residual plots, diminishing returns, accelerated effects, etc.
+    - Ex. House age &rarr; depreciation, then vintage value
+
+## Creating Spatial Features
+- Tobler's First Law of Geography
+  - “Everything is related to everything else, but near things are more related than distant things”
+- Distance-based factors matter more the closer you are to them
+- Types of Spatial Variables
+  - Buffer Aggregation &rarr; count or sum of events within a defined distance
+  - k-Nearest Neighbors (kNN) &rarr; average distance to k closest events
+  - Distance to Specific Points &rarr; straight-line distance to important locations
+- Fixed Effects
+  - Categorical variables that capture all unmeasured characteristics of a group
+  - Helpful for situations where you cannot easily capture every aspect of a place's characteristics with defined variables
+  - Often, we'll see a large jump in R2 value when introducing fixed effects
+
+## Cross-Validation
+- Different types:
+  - Train/Test Splite &rarr; 80/20 split, simple but unstable method
+  - k-Fold Cross-Validation &rarr; split into k folds, train on k-1, test on 1, repeat across all "folds" allowing each to have a chance at being a training and testing dataset
+  - LOOCV &rarr; leave one observation out at a time (special case of k-fold)
+- k-Fold CV helps tell us how well models predict NEW data, is more honest than in-sample R2, and helps detect overfitting
+  - Categorical variables require that there's enough data in each category so that samples always include all examples of the categorical variable
+  - This makes k-Fold CV useful typically only in large datasets
+
+
+  
+  
+  

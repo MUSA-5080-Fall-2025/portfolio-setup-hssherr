@@ -1,0 +1,671 @@
+---
+title: "Assignment 2: Spatial Analysis and Visualization"
+subtitle: "Healthcare Access and Equity in Pennsylvania"
+author: "Henry Sywulak-Herr"
+date: today
+format: 
+  html:
+    code-fold: false
+    toc: true
+    toc-location: left
+    theme: cosmo
+    embed-resources: true
+execute:
+  warning: false
+  message: false
+editor: 
+  markdown: 
+    wrap: 72
+---
+
+## Part 1: Healthcare Access for Vulnerable Populations
+
+### Research Question
+
+Which Pennsylvania counties have the highest proportion of vulnerable
+populations (elderly + low-income) living far from hospitals?
+
+#### Step 1: Data Collection
+
+```{r}
+# Load required packages
+library(pacman)
+p_load(tidyverse, tidycensus, tigris, sf, knitr)
+
+# Load spatial data
+fips_code_pa <- 42
+data_year <- 2022
+
+counties <- counties(state = fips_code_pa,
+                     year = data_year,
+                     progress_bar = F)
+tracts <- tracts(state = fips_code_pa,
+                 year = data_year,
+                 progress_bar = F)
+hospitals <- st_read("./data/hospitals.geojson", quiet = T)
+
+data_list <- mget(c("counties", "tracts", "hospitals"))
+
+# Check that all data loaded correctly
+paste0("Hospital Count = ", nrow(hospitals))
+paste0("Census Tract Count = ", nrow(tracts))
+
+crs_df <- data.frame(Datum = sapply(data_list, function(x) {st_crs(x, parameters = T)$Name}),
+                     EPSG = sapply(data_list, function(x) {st_crs(x, parameters = T)$epsg}))
+
+kable(crs_df)
+```
+
+------------------------------------------------------------------------
+
+#### Step 2: Demographic Data Acquisition
+
+```{r}
+variable_names <- tidycensus::load_variables(2022, "acs5")
+
+# Get demographic data from ACS
+vars <- c("pop_tot" = "B01001_001",
+          "med_hh_inc" = "B19013_001")
+
+pop_over65_vars <- c("B01001_020", "B01001_021", "B01001_022", "B01001_023", "B01001_024", "B01001_025",
+              "B01001_044", "B01001_045", "B01001_046", "B01001_047", "B01001_048", "B01001_049")
+
+popTot_medInc <- get_acs(geography = "tract",
+                     variable = vars,
+                     year = data_year,
+                     state = fips_code_pa,
+                     output = "wide")
+
+pop_over65 <- get_acs(geography = "tract",
+                      variable = pop_over65_vars,
+                      year = data_year,
+                      state = fips_code_pa)
+
+pop_over65_sum <- pop_over65 %>% 
+  group_by(GEOID) %>% 
+  summarise(pop_elderlyE = sum(estimate),
+            pop_elderlyM = sum(moe))
+
+demo_vars <- left_join(popTot_medInc, pop_over65_sum, by = "GEOID")
+
+# Join to tract boundaries
+demo_vars_sf <- left_join(demo_vars, tracts %>% select(GEOID), by = "GEOID") %>% 
+  st_as_sf()
+
+# Separate out Tract/County names
+demo_vars_sf <- demo_vars_sf %>%
+  separate(NAME,
+           into = c("TRACT", "COUNTY", "STATE"),
+           sep = "; ",
+           remove = T) %>% 
+  mutate(TRACT = parse_number(TRACT),
+         COUNTY = sub(x = COUNTY, " County", ""))
+
+
+# Answers to questions
+paste0("ACS Year = ", data_year)
+paste0("Count of Tracts with Missing Income Data = ", sum(is.na(demo_vars_sf$med_hh_incE)))
+paste0("Median Income across All PA Census Tracts = ", median(demo_vars_sf$med_hh_incE, na.rm = T))
+```
+
+------------------------------------------------------------------------
+
+#### Step 3: Defining Vulnerable Populations
+
+```{r}
+# Filter for vulnerable tracts based on criteria
+demo_vars_sf <- demo_vars_sf %>%
+  mutate(pop_elderly_pct = round((pop_elderlyE / pop_totE)*100, 2),
+         low_inc = as.integer(med_hh_incE < 50000),
+         high_elderly = as.integer(pop_elderly_pct > 16.8),
+         vulnerable = case_when(low_inc == 1 & high_elderly == 1 ~ 1,
+                                .default = 0))
+
+vulnerable_tracts <- demo_vars_sf %>% filter(vulnerable == 1)
+
+kable(head(vulnerable_tracts %>% 
+             select(TRACT, COUNTY, pop_totE, med_hh_incE, pop_elderlyE, pop_elderly_pct) %>% 
+             st_drop_geometry()),
+      col.names = c("Tract", "County", "Total Population", "Median HH Inc ($)", "Elderly Population", "Percent Elderly"),
+      caption = "Example tracts with low median household income and a high percentage of elderly residents:")
+```
+
+According to an article in [Philadelphia
+Today](https://philadelphia.today/2024/09/philadelphia-poverty-rate/),
+the household poverty threshold in 2023 was \$30,000. While this is the
+official threshold - and likely higher than it was in 2022 - healthcare
+costs and a lack of consistent income post-retirement for elderly folks
+likely result in additional financial strain even if they have income
+levels slightly greater than \$30,000. For this analysis, a low-income
+threshold of \$50,000 was chosen instead to encompass these groups of
+residents.
+
+Between 2010 and 2020, the people aged 65 and older in the United States
+[exceeded 1 in 6
+residents](https://www.census.gov/library/stories/2023/05/2020-census-united-states-older-population-grew.html)
+(16.8%). This percentage was used as the threshold for having an
+abnormally high elderly population.
+
+```{r}
+# count of tracts that meet vulnerability critetia
+paste0("Count of Vulnerable Tracts = ", nrow(vulnerable_tracts))
+
+# percent of census tracts considered vulnerable
+paste0("Percentage of PA Tracts Considered Vulnerable = ", round((nrow(vulnerable_tracts)/nrow(demo_vars_sf))*100, 2), "%")
+```
+
+------------------------------------------------------------------------
+
+#### Step 4: Calculating Distance to Hospitals
+
+A projected coordinate system centered around southern Pennsylvania
+(EPSG 2272) was chosen for this analysis in order to accurately
+calculate distances to the nearest hospital, unlike the original
+geographic coordinate systems each layer was in previously which are in
+units of decimal degrees. This coordinate system is based on the NAD83
+datum and has units of US Survey Feet.
+
+```{r}
+# Transform to appropriate projected CRS
+
+demo_vars_sf <- demo_vars_sf %>% 
+  st_transform(2272)
+hospitals <- hospitals %>% 
+  st_transform(2272)
+
+# Calculate distance matrix for each tract centroid to the nearest hospital
+hospital_dist_matrix <- demo_vars_sf %>%
+  st_centroid() %>% 
+  st_distance(hospitals)
+
+hospital_dist_min <- apply(hospital_dist_matrix, 1, min)
+
+demo_vars_sf <- demo_vars_sf %>% 
+  mutate(hospital_dist = round((hospital_dist_min)/5280, 2))
+
+# Recreate vulnerable tracts df with hospital_dist variable
+vulnerable_tracts <- demo_vars_sf %>% filter(vulnerable == 1)
+
+# Average distance to hospitals
+paste0("Average Distance from Vulnerable Tracts to the Nearest Hospital = ",
+       round(mean(vulnerable_tracts$hospital_dist), 2), 
+       " mi")
+
+# Maximum distance to hospitals
+paste0("Maximum Distance from Tract Centroids to Nearest Hospital = ",
+       max(vulnerable_tracts$hospital_dist),
+       " mi")
+
+# Count of vulnerable tracts more than 15 mi from the nearest hospital
+paste0("Number of Vulnerable Tracts >15 mi from the Nearest Hospital = ",
+       sum(vulnerable_tracts$hospital_dist > 15))
+
+```
+
+------------------------------------------------------------------------
+
+#### Step 5: Identify Underserved Areas
+
+"Underserved" tracts are defined here as vulnerable tracts that are more
+than 15 miles from the nearest hospital.
+
+```{r}
+# Create underserved variable
+vulnerable_tracts <- vulnerable_tracts %>% 
+  mutate(underserved = case_when((vulnerable == 1 & hospital_dist > 15) ~ 1,
+                                 .default = 0))
+
+# Number of underserved tracts
+paste0("Number of Underserved Tracts = ", sum(vulnerable_tracts$underserved))
+
+# Percentage of vulnerable tracts that are underserved
+paste0("Percentage of Vulnerable Tracts that are Underserved = ",
+       round(sum(vulnerable_tracts$underserved)/nrow(vulnerable_tracts)*100, 2),
+       "%")
+```
+
+The percentage of vulnerable tracts that are underserved is rather low
+in Pennsylvania, which is surprising. Pennsylvania has many rural
+communities with sparsely distributed resources, including hospitals.
+The distribution of underserved census tracts in Pennsylvania do appear
+to be in rural, central PA counties (see the table below for the
+counties associated with these seven tracts); however, it is puzzling
+how few of them there are.
+
+```{r}
+# Table of the counties associated with the seven vulnerable tracts that are underserved in PA
+kable(vulnerable_tracts %>% 
+        filter(underserved == 1) %>%
+        select(TRACT, COUNTY) %>%
+        st_drop_geometry(),
+      col.names = c("Tract", "County"),
+      caption = "Underserved Vulnerable Tracts in PA")
+```
+
+------------------------------------------------------------------------
+
+#### Step 6: Aggregate to County Level
+
+```{r}
+# Spatial join tracts to counties
+# Spatial joins were not used because spatial inconsistencies between the layers were producing duplicate instances of tracts across multiple counties despite everything being in the same crs. Tabular joins were more effective.
+
+counties <- counties %>% 
+  st_transform(2272)
+
+demo_vars_sf <- demo_vars_sf %>%
+  mutate(underserved = case_when((vulnerable == 1 & hospital_dist > 15) ~ 1,
+                                 .default = 0))
+
+demo_vars <- demo_vars_sf %>% 
+  st_drop_geometry()
+
+demo_vars_cty <- left_join(counties %>% select(GEOID, NAME),
+                         demo_vars, by = c("NAME" = "COUNTY"))
+
+# Aggregate statistics by county
+demo_vars_cty_stats <- demo_vars_cty %>% 
+  group_by(NAME) %>% 
+  summarise(pop_tot_agg = sum(pop_totE, na.rm = T),
+            med_hh_inc_agg = median(med_hh_incE, na.rm = T), 
+            pop_elderly_agg = sum(pop_elderlyE, na.rm = T),
+            low_inc_cnt = sum(low_inc, na.rm = T),
+            vulnerable_cnt = sum(vulnerable, na.rm = T),
+            underserved_cnt = sum(underserved, na.rm = T),
+            hospital_dist_avg = round(mean(hospital_dist, na.rm = T), 2),
+            pop_vulnerable = sum(pop_elderlyE*vulnerable)) %>% 
+  mutate(pop_elderly_pct_agg = round((pop_elderly_agg/pop_tot_agg)*100, 2),
+         underserved_pct = round((underserved_cnt/vulnerable_cnt)*100, 2))
+
+```
+
+After conducting this analysis, there are only 5 counties that have
+underserved census tracts: Cameron, Clearfield, Forest, Juniata, and
+Monroe.
+
+```{r}
+underserved_pct_top <- demo_vars_cty_stats %>%
+  select(NAME, underserved_pct) %>% 
+  arrange(-underserved_pct) %>% 
+  head(5) %>% 
+  st_drop_geometry()
+
+kable(underserved_pct_top,
+      col.names = c("County", "% of Vulnerable Tracts Underserved"))
+```
+
+There are also only five counties that have an average distance to the
+nearest hospital greater than 15 miles: Cameron, Forest, Juniata, Pike,
+and Sullivan. However, due to the nature of aggregating tract-level data
+to the county level, Pike and Sullivan have no vulnerable tracts and
+thus have no vulnerable population (which was calculated by isolating
+tracts considered vulnerable and summing their elderly population). If
+considering living far from hospitals to include any distance greater
+than 10 miles instead of 15, the top five counties with the greatest
+vulnerable population are:
+
+```{r}
+vulnerable_pop_top <- demo_vars_cty_stats %>% 
+  filter(hospital_dist_avg > 10) %>%
+  arrange(-pop_vulnerable) %>% 
+  select(NAME, pop_vulnerable) %>% 
+  head(5) %>% 
+  st_drop_geometry()
+
+kable(vulnerable_pop_top, col.names = c("County", "Vulnerable Population"))
+```
+
+There is a pattern that counties with underserved elderly populations
+typically lie in the more rural areas of central and northeastern
+Pennsylvania, far from major city centers like Philadelphia and
+Pittsburgh that have high concentrations of concentrated hospitals and
+medical services.
+
+```{r}
+demo_vars_cty_stats <- demo_vars_cty_stats %>% 
+  mutate(underserved_cnt_factor = as.factor(underserved_cnt))
+plot(demo_vars_cty_stats[,"underserved_cnt_factor"],
+     pal = c("grey", "green4", "steelblue"),
+     main = "Count of Underserved Census Tracts")
+```
+
+------------------------------------------------------------------------
+
+#### Step 7: Create Summary Table
+
+```{r}
+top10_priority <- demo_vars_cty_stats %>% 
+  filter(hospital_dist_avg > 10) %>% 
+  arrange(-pop_vulnerable) %>% 
+  head(10) %>% 
+  select(NAME, pop_tot_agg, med_hh_inc_agg, pop_elderly_pct_agg, pop_vulnerable, hospital_dist_avg) %>% 
+  st_drop_geometry()
+
+# Create and format priority counties table
+kable(top10_priority,
+      col.names = c("County", "Total Population", "Median HH Income ($)", "% Elderly Population", "Vulnerable Population", "Mean Distance to Nearest Hospital (mi)"), format.args = list(big.mark = ","),
+      caption = "Top Ten Counties to Target for Healthcare Investment")
+
+```
+
+------------------------------------------------------------------------
+
+## Part 2: Comprehensive Visualization
+
+### Map 1: County-Level Choropleth
+
+```{r}
+ggplot() +
+  geom_sf(
+    data = demo_vars_cty_stats,
+    aes(fill = underserved_pct),
+    color = "transparent"
+    ) +
+  scale_fill_binned(
+    name = "Underserved Pct (%)",
+    breaks = seq(0, 100, by = 20),
+    low = "#e5f5e0",
+    high = "#006d2c",
+    na.value = "grey75"
+    ) +
+  geom_sf(data = hospitals, aes(color = "Hospitals"), size = 0.75) +
+  scale_color_manual(name = "Hospital Locations",
+                     values = c("Hospitals" = "black")
+                     ) +
+  theme_void() +
+  labs(title = "Percent of Census Tracts Classified as Underserved Within a County",
+       subtitle = "Relative to Hospital Locations")
+```
+
+------------------------------------------------------------------------
+
+### Map 2: Detailed Vulnerability Map
+
+```{r}
+# Create detailed tract-level map
+ggplot() +
+  geom_sf(data = demo_vars_sf %>% 
+            mutate(fill_category = case_when(
+              underserved == 1 ~ "Underserved",
+              vulnerable == 1 ~ "Vulnerable",
+              vulnerable == 0 ~ "Not Vulnerable",
+              .default = "No Data"
+            )),
+          aes(fill = factor(fill_category, levels = c("Underserved",
+                                                      "Vulnerable",
+                                                      "Not Vulnerable")
+                            )
+              ),
+          color = "transparent") +
+  scale_fill_manual(name = "Underserved | Vulnerability",
+                    values = c("Underserved" = "red3",
+                               "Vulnerable" = "gold2",
+                               "Not Vulnerable" = "grey75",
+                               "No Data" = "grey65")
+                    ) +
+  geom_sf(data = counties,
+          fill = "transparent",
+          color = "grey35") +
+  geom_sf(data = hospitals,
+          aes(color = "Hospitals"),
+          size = 0.75) +
+   scale_color_manual(name = "Hospital Locations",
+                     values = c("Hospitals" = "black")
+                     ) +
+  theme_void() +
+  labs(title = "Spatial Comparison of Underserved and Vulnerable Census Tracts",
+       subtitle = "Relative to County Boundaries and Hospitals")
+
+```
+
+------------------------------------------------------------------------
+
+### Chart 1: Distribution Analysis
+
+```{r}
+# Create distribution visualization
+ggplot() +
+  geom_histogram(data = demo_vars_sf %>% filter(vulnerable == 1),
+                 aes(hospital_dist),
+                 bins = 50,
+                 na.rm = T, fill = "steelblue",
+                 colour = "grey30") +
+  labs(title = "Histogram Distribution of Distances to the Nearest Hospital",
+       subtitle = "From Census Tract Centroids",
+       x = "Distance to the Nearest Hospital (mi)",
+       y = "Count") +
+  theme_bw()
+  
+
+
+
+```
+
+The distribution is right-skewed with a majority of census tract
+centroids lying within 4-5 miles of the closest hospital. The maximum
+distance from a hospital is slightly less than 20 miles, and there are a
+considerable number of outliers between 5 and 20 miles.
+
+------------------------------------------------------------------------
+
+## Part 3: Additional Data Analysis
+
+#### Emergency Services
+
+**Option G: EMS Response Coverage** - **Data:** Fire Stations, EMS
+stations, Population density, High-rise buildings - **Question:** "Are
+population-dense areas adequately covered by emergency services?" -
+**Operations:** Create service area buffers (5-minute drive = \~2
+miles), assess population coverage, identify gaps in high-density
+areas - **Policy relevance:** Emergency preparedness, station siting
+decisions
+
+------------------------------------------------------------------------
+
+### Analysis
+
+```{r}
+# Load additional dataset(s)
+pop_phl <- demo_vars_sf %>%
+  filter(COUNTY == "Philadelphia") %>% 
+  select(GEOID, TRACT, COUNTY, STATE, pop_totE, pop_totM)
+
+firehouses <- st_read("./data/Fire_Dept_Facilities.geojson", quiet = T) %>% 
+  st_transform(st_crs(pop_phl))
+
+paste0("Number of Fire Stations in PHL = ", nrow(firehouses))
+```
+
+The dataset loaded above was sourced from OpenDataPhilly's [Fire
+Department
+Facilities](https://opendataphilly.org/datasets/fire-department-facilities/)
+dataset, created in 2014. Despite the age of the dataset, it's assumed
+that fire stations are relatively permanent fixtures in communities and
+likely have persisted into the year of the population data (2022).
+Through this assumption, this spatial analysis will seek to illustrate
+how well/poorly fire stations in Philadelphia are adapted to the current
+population patterns within the city.
+
+The firehouse dataset was originally in a geographic WGS84 coordinate
+system (EPSG 4326), which necessitated transforming it to a projected
+coordinate system. The CRS used in the previous analysis (EPSG 2272) was
+intended for use in Southern Pennsylvania, and so the CRS from the
+population dataset was called instead of using the EPSG code to ensure
+they'd be the same.
+
+```{r}
+ggplot() +
+  geom_sf(data = demo_vars_sf %>% 
+            filter(COUNTY == "Philadelphia") %>%
+            select(geometry),
+          fill = "transparent",
+          color = "grey75") +
+  geom_sf(data = demo_vars_cty %>% 
+            filter(NAME == "Philadelphia") %>% 
+            select(geometry),
+          fill = "transparent",
+          color = "grey35") +
+  geom_sf(data = firehouses,
+          aes(color = "Firehouses"),
+          size = 3) +
+  scale_color_manual(name = "",
+                     values = c("Firehouses"= "red3")) +
+  theme_void() +
+  labs(title = "Firehouse Locations in Philadelphia",
+       subtitle = "Relative to Census Tracts")
+```
+
+**Note:** one fire station is located outside the southern boundary of
+Philadelphia County. This is likely a fire station dedicated to serving
+the Philadelphia International Airport, since most of the airport lies
+within Delaware County. This airport will be omitted from this analysis
+partially due to its location, but also because it likely primarily (or
+almost exclusively) serves the airport, and from past experience
+analyzing this area the population density is far lower due a high
+concentration of both airport and industrial land uses.
+
+```{r}
+# remove firehouses outside the boundary of Philadelphia County
+firehouses <- st_filter(firehouses, demo_vars_cty %>% filter(NAME == "Philadelphia"))
+```
+
+------------------------------------------------------------------------
+
+**Pose a research question**
+
+Does the distribution of fire stations in Philadelphia as registered in
+2014 (assumed to be the same, if not similar, to that of today)
+adequately cover the population of the city as of 2022? Which fire
+stations serve the lowest population density and where are they located
+in the city?
+
+------------------------------------------------------------------------
+
+**Conduct spatial analysis**
+
+```{r}
+# Create a two mile buffer zone around every fire station in Philadelphia County
+firehouses_2mi <- st_buffer(firehouses, dist = (2*5280))
+
+# Calculate areas of census tracts to perform an areal interpolation
+pop_phl <- pop_phl %>% 
+  mutate(area_tract = as.numeric(st_area(.)))
+
+# perform an intersection to get every partial overlap of each buffer with the surrounding census tracts
+# calculate the areas of these intersections and get their area, then divide by the area of the corresponding census tract to get an area ratio
+# multiply this ratio to the total population of the census tract to get a partial population count for each intersection
+# NOTE: assumes even population distribution across every census tract
+firehouses_int <- st_intersection(firehouses_2mi, pop_phl) %>% 
+  mutate(area_int = as.numeric(st_area(.)),
+         area_frac = area_int/area_tract,
+         pop_int = pop_totE * area_frac)
+
+# sum population fractions to each buffer to get the total serviced population
+firehouses_sum <- firehouses_int %>% 
+  group_by(objectid) %>% 
+  summarise(pop_served = sum(pop_int))
+
+# join results back to the point dataset to map
+firehouses <- left_join(firehouses, firehouses_sum %>% st_drop_geometry(), by = "objectid")
+
+firehouses_stats <- firehouses %>%
+  st_drop_geometry %>%
+  summarise(Minimum = min(pop_served, na.rm = T),
+            Mean = mean(pop_served, na.rm = T),
+            Median = median(pop_served, na.rm = T),
+            Maximum = max(pop_served, na.rm = T),
+            Total = sum(pop_served, na.rm = T)) %>% 
+  kable(digits = 2,
+        format.args = list(big.mark = ","),
+        caption = "Summary Statistics of Population Served by Firehouses in Philadelphia")
+
+firehouses_stats
+```
+
+```{r}
+ggplot() +
+  geom_sf(data = demo_vars_sf %>% 
+            filter(COUNTY == "Philadelphia") %>%
+            select(geometry),
+          fill = "transparent",
+          color = "grey75") +
+  geom_sf(data = demo_vars_cty %>% 
+            filter(NAME == "Philadelphia") %>% 
+            select(geometry),
+          fill = "transparent",
+          color = "grey35") +
+  geom_sf(data = firehouses %>% mutate(pop_10k = pop_served/10000),
+          aes(fill = pop_10k),
+          shape = 21,
+          color = "grey25",
+          size = 3) +
+  scale_fill_binned(
+    name = "Population Served (10k)",
+    breaks = seq(0, 28, by = 7),
+    limits = c(0, 28),
+    low = "#EEE5E9",
+    high = "red3",
+    na.value = "grey75"
+    ) +
+  theme_void() +
+  labs(title = "Total Population Served by Fire Stations in Philadelphia",
+       subtitle = "Station Locations: 2014, Population Data: 2022")
+```
+
+**Interpretation of Findings:**
+
+According to the ACS5, the population in Philadelphia County is
+approximately 1,593,000 people. If every fire station served the median
+number of people served (176,000 people) and Philadelphia's population
+were evenly distributed throughout the city, there would theoretically
+only need to be 10 fire stations to cover the entirety of the city's
+population. This isn't the whole picture, however, as with all emergency
+services redundancy and spatial proximity to residents is also critical
+towards ensuring that all everying is served adequately and rapidly in
+the event of a fire.
+
+Fire stations in Philadelphia are spread throughout the city, with
+greater concentrations in Center City and North Philadelphia. The
+greatest populations served are also in these areas. As fire stations
+get closer to the border of the county the population served decreases.
+This is likely due to edge effects where populations in surrounding
+counties (Montgomery, Delaware, etc.) are not being counted despite
+these stations still likely assisting them. On the eastern border of the
+county, this is due to the Delaware River and not due to the data
+restrictions set at the beginning of this analysis.
+
+Visually, as the Navy Yard continues to see development in the coming
+decades and as population density in the far Northeast continues to
+increase, it might be a good policy decision in the future to encourage
+the creation of additional fire stations in these areas in order to
+relieve burden from surrounding stations and potentially improve
+response times. Further analysis could investigate average response
+times and/or quantify the burden currently on each station to see where
+additional stations/resources are needed.
+
+## Comments about incorporation of feedback:
+
+Additional care was taken to clean up this document, removing
+instruction text and changing the wording of certain headings. All
+tables and charts that are produced in the report are intended to have a
+purpose/serve the narrative of the report. Tweaks were made to the
+classification criteria at certain points (i.e. changing the threshold
+of hospital distance from 15 miles to 10 miles) in order to achieve a
+more insightful result.
+
+------------------------------------------------------------------------
+
+## Submission Requirements
+
+**What to submit:**
+
+1.  **Rendered HTML document posted to your course portfolio** with all
+    code, outputs, maps, and text
+    -   Use `embed-resources: true` in YAML so it's a single file
+    -   All code should run without errors
+    -   All maps and charts should display correctly
+
+**File naming:** `LastName_FirstName_Assignment2.html` and
+`LastName_FirstName_Assignment2.qmd`
+
+------------------------------------------------------------------------

@@ -55,7 +55,7 @@ Residential property tax assessments have [equitable and financial]{style="color
 :::
 
 ::: {.column width="20%"}
--   Higher sale prices are concentrated in [Central]{style="color:purple;"} and [Northeast]{style="color:purple;"} Philadelphia
+-   Higher sale prices are concentrated in [Central]{style="color:purple;"} and [Northwest]{style="color:purple;"} Philadelphia
 :::
 :::::
 
@@ -78,7 +78,7 @@ Residential property tax assessments have [equitable and financial]{style="color
 | Model 1 | 230,140.41 | 15,174.13 | 0.287 |
 | Model 2 | 215,430.39 | 90,217.97 | 0.380 |
 | Model 3 | 211,021.39 | 90,144.74 | 0.405 |
-| Model 4 | 196,081.17 |  1,582.45 | 0.490 |
+| Model 4 | 196,081.17 | 71,582.45 | 0.490 |
 
 : Model Performance Metrics {.striped .hover tbl-left}
 
@@ -88,9 +88,9 @@ Residential property tax assessments have [equitable and financial]{style="color
 ## Top Predictors 
 
 ::: {.column width="20%"}
-- In a wealthy neighborhood ($\beta$ = 47,309.230, p \< 0.01)
-- Number of bedrooms ($\beta$ = 35,121.540, p \< 0.01)
-- Number of bathrooms ($\beta$ = 25,942.210, p \< 0.01)
+- In a wealthy neighborhood ($\beta$ = 50,306.450, p \< 0.01)
+- Number of bedrooms ($\beta$ = 33,544.290, p \< 0.01)
+- Number of bathrooms ($\beta$ = 29,510.940, p \< 0.01)
 :::
 :::
 

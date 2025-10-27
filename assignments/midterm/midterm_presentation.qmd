@@ -10,87 +10,82 @@ format:
     smaller: true
 ---
 
+## Who We Are
+![](midterm_presentation_files/TeamLogo.png){fig-align="center" width="100%"}
+
 ## Research Question and Motivation
 
-:::: {.columns}
-
+::::: columns
 ::: {.column width="50%"}
-Research Question
+**Research Question**
 
 Identify which [predictors]{style="color:purple;"} (spatial, structural, and/or socio-economic) contribute to the most accurate model for the City's Automated Valuation Model
 :::
 
 ::: {.column width="50%"}
-Motivation
+**Motivation**
 
 Residential property tax assessments have [equitable and financial]{style="color:purple;"} implications for homeowners as well as [fiscal]{style="color:purple;"} implications for the city
 :::
+:::::
 
-::::
-
-
-![](midterm_presentation_files/Skyline.jpg){fig-align="center" width=100%}
-
+![](midterm_presentation_files/Skyline.jpg){fig-align="center" width="100%"}
 
 ## Data Sources
 
-- [Property Sales]{style="color:purple;"} (Philadelphia, 2023-2024): City of Philadelphia - OpenDataPhilly
-- [Socio-Economics]{style="color:purple;"}: United States Census - American Community Survey 
-- [Spatial Features]{style="color:purple;"}: City of Philadelphia - OpenDataPhilly
+-   [Property Sales]{style="color:purple;"} (Philadelphia, 2023-2024): City of Philadelphia - OpenDataPhilly
+-   [Socio-Economics]{style="color:purple;"}: United States Census - American Community Survey
+-   [Spatial Features]{style="color:purple;"}: City of Philadelphia - OpenDataPhilly
 
-::: {.columns}
+::::: columns
 ::: {.column width="50%"}
-![](midterm_presentation_files/Census.png){fig-align="left" width=100%}
+![](midterm_presentation_files/Census.png){fig-align="left" width="100%"}
 :::
 
 ::: {.column width="50%"}
-![](midterm_presentation_files/CityofPhiladelphiaLogo.jpg){fig-align="right" width=100%}
+![](midterm_presentation_files/CityofPhiladelphiaLogo.jpg){fig-align="right" width="100%"}
 :::
-:::
-
+:::::
 
 ## Spatial Distribution of Sale Prices in Philadelphia
 
-::: {.columns}
+::::: columns
 ::: {.column width="80%"}
-![](midterm_presentation_files/salepricemap.png){fig-align="center" width=80%}
+![](midterm_presentation_files/salepricemap.png){fig-align="center" width="80%"}
 :::
 
 ::: {.column width="20%"}
-- Higher sale prices are concentrated in [Central]{style="color:purple;"} and [Northeast]{style="color:purple;"} Philadelphia
+-   Higher sale prices are concentrated in [Central]{style="color:purple;"} and [Northeast]{style="color:purple;"} Philadelphia
 :::
-:::
+:::::
 
 ## Factors Impacting Sale Price
 
-::: {.columns}
+::::: columns
 ::: {.column width="80%"}
-![](midterm_presentation_files/TLAbig.jpg){fig-align="center" width=80%}
+![](midterm_presentation_files/TLAbig.jpg){fig-align="center" width="80%"}
 :::
 
 ::: {.column width="20%"}
-- There is a notable relationship between [sale price]{style="color:purple;"} and [total livable area]{style="color:purple;"}
+-   There is a notable relationship between [sale price]{style="color:purple;"} and [total livable area]{style="color:purple;"}
 :::
-:::
+:::::
 
 ## Model Comparison
-| Model | RMSE | MAE | R² |
-|:------|----------:|---------:|---------:|
+
+| Model   |       RMSE |       MAE |    R² |
+|:--------|-----------:|----------:|------:|
 | Model 1 | 230,140.41 | 15,174.13 | 0.287 |
 | Model 2 | 215,430.39 | 90,217.97 | 0.380 |
 | Model 3 | 211,021.39 | 90,144.74 | 0.405 |
-| Model 4 | 196,081.17 | 1,582.45 | 0.490 |
+| Model 4 | 196,081.17 |  1,582.45 | 0.490 |
 
 : Model Performance Metrics {.striped .hover tbl-left}
 
-- Model 1 (Structural) and Model 2 (Structural + Census) had the worst performance.
-- Spatial features (Model 3) and interaction terms (Model 4) boosted model performance.
+-   [Model 1]{style="color:purple;"} (Structural) and [Model 2]{style="color:purple;"} (Structural + Census) had the worst performance.
+-   [Spatial features]{style="color:purple;"} (Model 3) and [interaction terms]{style="color:purple;"} (Model 4) boosted model performance.
 
 ## Top Predictors 
-::: {.columns}
-::: {.column width="80%"}
-![](midterm_presentation_files/TLAbig.jpg){fig-align="center" width=80%}
-:::
 
 ::: {.column width="20%"}
 - In a wealthy neighborhood ($\beta$ = 47,309.230, p \< 0.01)
@@ -101,29 +96,14 @@ Residential property tax assessments have [equitable and financial]{style="color
 
 ## Model Performance
 
-::: {.columns}
+![](midterm_presentation_files/Final_Model_CV_Scatter.png){fig-align="center" width="100%"}
 
-::: {.column width="80%"}
-![](midterm_presentation_files/Final_Model_CV_Scatter.png){fig-align="center" width=80%}
-:::
 
-::: {.column width="20%"}
-- Final RMSE: $195,093.2
-- MAE: $71,587.66
-- The scatterplot shows actual vs predicted values for Model 4 after a 10-fold Cross Validation
-:::
-:::
+## Hardest to Predict
 
-## Hardest to Predict 
-::: {.columns}
-::: {.column width="80%"}
-![](midterm_presentation_files/TLAbig.jpg){fig-align="center" width=80%}
-:::
+-   [Northeast]{style="color:purple;"} and [West]{style="color:purple;"} Philly are hardest to predict due to the low income neighborhood limitation of our model
 
-::: {.column width="20%"}
-- (Enter visualization of residuals by neighborhood)
-:::
-:::
+![](midterm_presentation_files/median.png){fig-align="center" width="60%"}
 
 ## Recommendations  
 ::: {.columns}
@@ -136,28 +116,29 @@ Residential property tax assessments have [equitable and financial]{style="color
 :::
 :::
 
-## Limitations & Next Steps  
-::: {.columns}
-::: {.column width="80%"}
-![](midterm_presentation_files/TLAbig.jpg){fig-align="center" width=80%}
-:::
+![](midterm_presentation_files/houses.jpg){fig-align="center" width="80%"}
 
-::: {.column width="20%" style="text-align:left;"}
+## Limitations & Next Steps
+
+<!-- :::: columns -->
+<!-- ::: {.column width="20%" style="text-align:left;"} -->
 **Limitations**
 
-- Philadelphia sale prices don't have a linear relationship, particularly among lower-priced homes
-- Variables used were aggregated and not weighted
-:::
-:::
+-   Philadelphia sale prices don't have a linear relationship, particularly among lower-priced homes
+-   Variables used were aggregated and not weighted
 
-## Questions?  
-::: {.columns}
-::: {.column width="80%"}
-:::
+**Next Steps**
 
-::: {.column width="20%" style="text-align:left;"}
-**Thank you!** <br>
+-   Update the model to account for lower neighborhoods and tailor spatial features to add texture and depth to the model
+
+![](midterm_presentation_files/House.jpg){fig-align="center" width="80%"}
+
+
+## Questions?
+
+[Thank you!]{style="color:purple;"} from Sujan, Henry, Ryan, Kavana, Chloe, and Nina :) <br>
 <br>
 Contact us at: *inquiries@tnc.com*
-:::
-:::
+
+![](midterm_presentation_files/TeamLogo.png){fig-align="center" width="100%"}
+

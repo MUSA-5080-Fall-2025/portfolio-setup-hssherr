@@ -139,14 +139,18 @@ Team Name Consulting
 </div>
 
 </section>
+<section id="who-we-are" class="slide level2">
+<h2>Who We Are</h2>
+
+<img data-src="midterm_presentation_files/TeamLogo.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
 <section id="research-question-and-motivation" class="slide level2">
 <h2>Research Question and Motivation</h2>
 <div class="columns">
 <div class="column" style="width:50%;">
-<p>Research Question</p>
+<p><strong>Research Question</strong></p>
 <p>Identify which <span style="color:purple;">predictors</span> (spatial, structural, and/or socio-economic) contribute to the most accurate model for the City’s Automated Valuation Model</p>
 </div><div class="column" style="width:50%;">
-<p>Motivation</p>
+<p><strong>Motivation</strong></p>
 <p>Residential property tax assessments have <span style="color:purple;">equitable and financial</span> implications for homeowners as well as <span style="color:purple;">fiscal</span> implications for the city</p>
 </div></div>
 
@@ -243,59 +247,31 @@ Team Name Consulting
 </tbody>
 </table>
 <ul>
-<li>Model 1 (Structural) and Model 2 (Structural + Census) had the worst performance.</li>
-<li>Spatial features (Model 3) and interaction terms (Model 4) boosted model performance.</li>
+<li><span style="color:purple;">Model 1</span> (Structural) and <span style="color:purple;">Model 2</span> (Structural + Census) had the worst performance.</li>
+<li><span style="color:purple;">Spatial features</span> (Model 3) and <span style="color:purple;">interaction terms</span> (Model 4) boosted model performance.</li>
 </ul>
 </section>
 <section id="top-predictors" class="slide level2">
 <h2>Top Predictors</h2>
-<div class="columns">
-<div class="column" style="width:80%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="midterm_presentation_files/TLAbig.jpg" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
-</figure>
-</div>
-</div><div class="column" style="width:20%;">
+<div class="column" style="width:20%;">
 <ul>
 <li>In a wealthy neighborhood (<span class="math inline">\(\beta\)</span> = 47,309.230, p &lt; 0.01)</li>
 <li>Number of bedrooms (<span class="math inline">\(\beta\)</span> = 35,121.540, p &lt; 0.01)</li>
 <li>Number of bathrooms (<span class="math inline">\(\beta\)</span> = 25,942.210, p &lt; 0.01)</li>
 </ul>
-</div></div>
+</div><p>:::</p>
 </section>
 <section id="model-performance" class="slide level2">
 <h2>Model Performance</h2>
-<div class="columns">
-<div class="column" style="width:80%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="midterm_presentation_files/Final_Model_CV_Scatter.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
-</figure>
-</div>
-</div><div class="column" style="width:20%;">
-<ul>
-<li>Final RMSE: $195,093.2</li>
-<li>MAE: $71,587.66</li>
-<li>The scatterplot shows actual vs predicted values for Model 4 after a 10-fold Cross Validation</li>
-</ul>
-</div></div>
-</section>
+
+<img data-src="midterm_presentation_files/Final_Model_CV_Scatter.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
 <section id="hardest-to-predict" class="slide level2">
 <h2>Hardest to Predict</h2>
-<div class="columns">
-<div class="column" style="width:80%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="midterm_presentation_files/TLAbig.jpg" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
-</figure>
-</div>
-</div><div class="column" style="width:20%;">
 <ul>
-<li>(Enter visualization of residuals by neighborhood)</li>
+<li><span style="color:purple;">Northeast</span> and <span style="color:purple;">West</span> Philly are hardest to predict due to the low income neighborhood limitation of our model</li>
 </ul>
-</div></div>
-</section>
+
+<img data-src="midterm_presentation_files/median.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
 <section id="recommendations" class="slide level2">
 <h2>Recommendations</h2>
 <div class="columns">
@@ -307,35 +283,30 @@ Team Name Consulting
 <li>Physical features of a structure such as the number of bedrooms/bathrooms serve as strong predictors of home sale price. Nearby attractive amenities such as proximity to transit stations as well as distance from crime also contribute.</li>
 </ul>
 </div></div>
-</section>
+
+<img data-src="midterm_presentation_files/houses.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
 <section id="limitations-next-steps" class="slide level2">
 <h2>Limitations &amp; Next Steps</h2>
-<div class="columns">
-<div class="column" style="width:80%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="midterm_presentation_files/TLAbig.jpg" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
-</figure>
-</div>
-</div><div class="column" style="text-align:left;">
+<!-- :::: columns -->
+<!-- ::: {.column width="20%" style="text-align:left;"} -->
 <p><strong>Limitations</strong></p>
 <ul>
 <li>Philadelphia sale prices don’t have a linear relationship, particularly among lower-priced homes</li>
 <li>Variables used were aggregated and not weighted</li>
 </ul>
-</div></div>
-</section>
+<p><strong>Next Steps</strong></p>
+<ul>
+<li>Update the model to account for lower neighborhoods and tailor spatial features to add texture and depth to the model</li>
+</ul>
+
+<img data-src="midterm_presentation_files/House.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
 <section id="questions" class="slide level2">
 <h2>Questions?</h2>
-<div class="columns">
-<div class="column" style="width:80%;">
-
-</div><div class="column" style="text-align:left;">
-<p><strong>Thank you!</strong> <br> <br> Contact us at: <em>inquiries@tnc.com</em></p>
-</div></div>
+<p><span style="color:purple;">Thank you!</span> from Sujan, Henry, Ryan, Kavana, Chloe, and Nina :) <br> <br> Contact us at: <em>inquiries@tnc.com</em></p>
 
 
-</section>
+
+<img data-src="midterm_presentation_files/TeamLogo.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">

@@ -1,0 +1,43 @@
+---
+title: "Week 7 Notes - Model Diagnostics & Spatial Autocorrelation"
+date: "2025-10-20"
+---
+
+## Homework Feedback & Tips
+- Remove all progress bars and cluttered outputs from assignment documents
+  - For tidycensus/tigris &rarr; "progress_bar = F" or something similar
+  
+## Understanding Spatial Patterns in Errors
+- Random errors are good, clustered errors are bad
+  - We want to see models randomly predict poorly, not see patterns in how they predict poorly
+  - The latter is an indicator of spatial autocorrelation
+- Spatial Lag Plot
+  - Checking the relationship of variables to their 5 nearest neighbors, for example
+  - Use the "spdep" package in R
+
+## Moran's I
+- Range from -1 to +1
+  - +1 &rarr; perfect positive correlation (clustering)
+  - 0 &rarr; random spatial pattern
+  - -1 &rarr; perfect negative correlation (dispersion)
+
+$$I = \frac{n \sum_i \sum_j w_{ij}(x_i - \bar{x})(x_j - \bar{x})}{\sum_i \sum_j w_{ij} \sum_i (x_i - \bar{x})^2}$$
+- The Moran's I formula exaggerates values that are both similarly placed relative to the mean
+  - If there are large positive errors next to each other or large negative errors close to each other &rarr; positive numerator
+  - If there are errors above and below the mean next to each other, multiplying them together yields a negative value
+    - This works to bring Moran's I back closer to 0
+- Neighbors & Calculating Spatial Lag
+  - Queen &rarr; all neighbors surrounding a feature
+    - If a 3x3 grid, all 8 cells surrounding the central cell)
+  - Rook &rarr; the neighbors in the four cardinal directions relative to a feature
+    - If a 3x3 grid, the four cells touching the faces of the central cell
+  - Spatial Lag could be simply the average value of neighbors
+- Computing Moran's I
+  - moran.mc() in R
+- If Moran's I is high (errors are clustered):
+  - Add more spatial features
+  - Try introducing spatial fixed effects
+
+  
+  
+  

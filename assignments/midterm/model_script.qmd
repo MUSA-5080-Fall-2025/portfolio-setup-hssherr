@@ -445,7 +445,7 @@ This stage prepares and validates the OpenDataPhilly spatial datasets used to en
 
     -   Crime Incidents (2023 and 2024 combined)
 
-```{r open-data-philly-datasets-kavana}
+```{r open-data-philly-datasets}
 #| message: false
 #| warning: false
 
@@ -602,6 +602,8 @@ rel_crime <- st_intersects(crime_buffer, crime, sparse = TRUE)
 # count number of crimes
 crime_cnt <- lengths(rel_crime)
 
+rm(rel_crime)
+
 OPA_points <- OPA_points |>
   mutate(
     crime_cnt_0p5mi     = crime_cnt,
@@ -618,7 +620,7 @@ OPA_points <- OPA_points %>%
 ### Summary Table and Justification
 
 | Feature                          | Method       | Parameter   | Theoretical Rationale                                                                                                           |
-|-----------------|-----------------|-----------------|---------------------|
+|------------------|------------------|------------------|--------------------|
 | Distance to Nearest Transit Stop | kNN (k = 1)  | –           | Captures ease of access to public transport; nearest stop approximates walkability and job access.                              |
 | Distance to Nearest Hospital     | kNN (k = 1)  | –           | Reflects accessibility to health care and emergency services; proximity adds perceived security for households.                 |
 | Parks & Rec Sites within 0.25 mi | Buffer Count | r = 0.25 mi | Measures exposure to green space and recreational facilities within a 5-minute walk; positive amenity effect on property value. |

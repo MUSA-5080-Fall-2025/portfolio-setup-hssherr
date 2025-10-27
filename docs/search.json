@@ -1944,5 +1944,82 @@
     "title": "Week 6 Notes - Spatial Machine Learning & Advanced Regression",
     "section": "Cross-Validation",
     "text": "Cross-Validation\n\nDifferent types:\n\nTrain/Test Splite → 80/20 split, simple but unstable method\nk-Fold Cross-Validation → split into k folds, train on k-1, test on 1, repeat across all “folds” allowing each to have a chance at being a training and testing dataset\nLOOCV → leave one observation out at a time (special case of k-fold)\n\nk-Fold CV helps tell us how well models predict NEW data, is more honest than in-sample R2, and helps detect overfitting\n\nCategorical variables require that there’s enough data in each category so that samples always include all examples of the categorical variable\nThis makes k-Fold CV useful typically only in large datasets"
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#research-question-and-motivation",
+    "href": "assignments/midterm/midterm_presentation.html#research-question-and-motivation",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Research Question and Motivation",
+    "text": "Research Question and Motivation\n\n\nResearch Question\nIdentify which predictors (spatial, structural, and/or socio-economic) contribute to the most accurate model for the City’s Automated Valuation Model\n\nMotivation\nResidential property tax assessments have equitable and financial implications for homeowners as well as fiscal implications for the city"
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#data-sources",
+    "href": "assignments/midterm/midterm_presentation.html#data-sources",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Data Sources",
+    "text": "Data Sources\n\nProperty Sales (Philadelphia, 2023-2024): City of Philadelphia - OpenDataPhilly\nSocio-Economics: United States Census - American Community Survey\nSpatial Features: City of Philadelphia - OpenDataPhilly"
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#spatial-distribution-of-sale-prices-in-philadelphia",
+    "href": "assignments/midterm/midterm_presentation.html#spatial-distribution-of-sale-prices-in-philadelphia",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Spatial Distribution of Sale Prices in Philadelphia",
+    "text": "Spatial Distribution of Sale Prices in Philadelphia\n\n\n\n\n\n\n\n\n\nHigher sale prices are concentrated in Central and Northeast Philadelphia"
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#factors-impacting-sale-price",
+    "href": "assignments/midterm/midterm_presentation.html#factors-impacting-sale-price",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Factors Impacting Sale Price",
+    "text": "Factors Impacting Sale Price\n\n\n\n\n\n\n\n\n\nThere is a notable relationship between sale price and total livable area"
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#model-comparison",
+    "href": "assignments/midterm/midterm_presentation.html#model-comparison",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Model Comparison",
+    "text": "Model Comparison\n\nModel Performance Metrics\n\n\nModel\nRMSE\nMAE\nR²\n\n\n\n\nModel 1\n230,140.41\n15,174.13\n0.287\n\n\nModel 2\n215,430.39\n90,217.97\n0.380\n\n\nModel 3\n211,021.39\n90,144.74\n0.405\n\n\nModel 4\n196,081.17\n1,582.45\n0.490\n\n\n\n\nModel 1 (Structural) and Model 2 (Structural + Census) had the worst performance.\nSpatial features (Model 3) and interaction terms (Model 4) boosted model performance."
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#top-predictors",
+    "href": "assignments/midterm/midterm_presentation.html#top-predictors",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Top Predictors",
+    "text": "Top Predictors\n\n\n\n\n\n\n\n\n\nIn a wealthy neighborhood (\\(\\beta\\) = 47,309.230, p &lt; 0.01)\nNumber of bedrooms (\\(\\beta\\) = 35,121.540, p &lt; 0.01)\nNumber of bathrooms (\\(\\beta\\) = 25,942.210, p &lt; 0.01)"
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#model-performance",
+    "href": "assignments/midterm/midterm_presentation.html#model-performance",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Model Performance",
+    "text": "Model Performance\n\n\n\n\n\n\n\n\n\nFinal RMSE: $195,093.2\nMAE: $71,587.66\nThe scatterplot shows actual vs predicted values for Model 4 after a 10-fold Cross Validation"
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#hardest-to-predict",
+    "href": "assignments/midterm/midterm_presentation.html#hardest-to-predict",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Hardest to Predict",
+    "text": "Hardest to Predict\n\n\n\n\n\n\n\n\n\n(Enter visualization of residuals by neighborhood)"
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#recommendations",
+    "href": "assignments/midterm/midterm_presentation.html#recommendations",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Recommendations",
+    "text": "Recommendations\n\n\n\n\n\nPolicymakers should be aware that houses in lower-income neighborhoods will not be accurately predicted by this model\nPhysical features of a structure such as the number of bedrooms/bathrooms serve as strong predictors of home sale price. Nearby attractive amenities such as proximity to transit stations as well as distance from crime also contribute."
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#limitations-next-steps",
+    "href": "assignments/midterm/midterm_presentation.html#limitations-next-steps",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Limitations & Next Steps",
+    "text": "Limitations & Next Steps\n\n\n\n\n\n\n\n\nLimitations\n\nPhiladelphia sale prices don’t have a linear relationship, particularly among lower-priced homes\nVariables used were aggregated and not weighted"
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#questions",
+    "href": "assignments/midterm/midterm_presentation.html#questions",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Questions?",
+    "text": "Questions?\n\n\n\n\nThank you!   Contact us at: inquiries@tnc.com"
   }
 ]

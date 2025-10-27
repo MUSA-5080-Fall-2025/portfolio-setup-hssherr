@@ -1,0 +1,163 @@
+---
+title: "Philadelphia Housing Price Prediction"
+subtitle: "Improving Property Tax Assessments"
+author: "Team Name Consulting"
+format: 
+  revealjs:
+    theme: serif
+    footer: "Team Name Consulting"
+    slide-number: true
+    smaller: true
+---
+
+## Research Question and Motivation
+
+:::: {.columns}
+
+::: {.column width="50%"}
+Research Question
+
+Identify which [predictors]{style="color:purple;"} (spatial, structural, and/or socio-economic) contribute to the most accurate model for the City's Automated Valuation Model
+:::
+
+::: {.column width="50%"}
+Motivation
+
+Residential property tax assessments have [equitable and financial]{style="color:purple;"} implications for homeowners as well as [fiscal]{style="color:purple;"} implications for the city
+:::
+
+::::
+
+
+![](midterm_presentation_files/Skyline.jpg){fig-align="center" width=100%}
+
+
+## Data Sources
+
+- [Property Sales]{style="color:purple;"} (Philadelphia, 2023-2024): City of Philadelphia - OpenDataPhilly
+- [Socio-Economics]{style="color:purple;"}: United States Census - American Community Survey 
+- [Spatial Features]{style="color:purple;"}: City of Philadelphia - OpenDataPhilly
+
+::: {.columns}
+::: {.column width="50%"}
+![](midterm_presentation_files/Census.png){fig-align="left" width=100%}
+:::
+
+::: {.column width="50%"}
+![](midterm_presentation_files/CityofPhiladelphiaLogo.jpg){fig-align="right" width=100%}
+:::
+:::
+
+
+## Spatial Distribution of Sale Prices in Philadelphia
+
+::: {.columns}
+::: {.column width="80%"}
+![](midterm_presentation_files/salepricemap.png){fig-align="center" width=80%}
+:::
+
+::: {.column width="20%"}
+- Higher sale prices are concentrated in [Central]{style="color:purple;"} and [Northeast]{style="color:purple;"} Philadelphia
+:::
+:::
+
+## Factors Impacting Sale Price
+
+::: {.columns}
+::: {.column width="80%"}
+![](midterm_presentation_files/TLAbig.jpg){fig-align="center" width=80%}
+:::
+
+::: {.column width="20%"}
+- There is a notable relationship between [sale price]{style="color:purple;"} and [total livable area]{style="color:purple;"}
+:::
+:::
+
+## Model Comparison
+| Model | RMSE | MAE | R² |
+|:------|----------:|---------:|---------:|
+| Model 1 | 230,140.41 | 15,174.13 | 0.287 |
+| Model 2 | 215,430.39 | 90,217.97 | 0.380 |
+| Model 3 | 211,021.39 | 90,144.74 | 0.405 |
+| Model 4 | 196,081.17 | 1,582.45 | 0.490 |
+
+: Model Performance Metrics {.striped .hover tbl-left}
+
+- Model 1 (Structural) and Model 2 (Structural + Census) had the worst performance.
+- Spatial features (Model 3) and interaction terms (Model 4) boosted model performance.
+
+## Top Predictors 
+::: {.columns}
+::: {.column width="80%"}
+![](midterm_presentation_files/TLAbig.jpg){fig-align="center" width=80%}
+:::
+
+::: {.column width="20%"}
+- In a wealthy neighborhood ($\beta$ = 47,309.230, p \< 0.01)
+- Number of bedrooms ($\beta$ = 35,121.540, p \< 0.01)
+- Number of bathrooms ($\beta$ = 25,942.210, p \< 0.01)
+:::
+:::
+
+## Model Performance
+
+::: {.columns}
+
+::: {.column width="80%"}
+![](midterm_presentation_files/Final_Model_CV_Scatter.png){fig-align="center" width=80%}
+:::
+
+::: {.column width="20%"}
+- Final RMSE: $195,093.2
+- MAE: $71,587.66
+- The scatterplot shows actual vs predicted values for Model 4 after a 10-fold Cross Validation
+:::
+:::
+
+## Hardest to Predict 
+::: {.columns}
+::: {.column width="80%"}
+![](midterm_presentation_files/TLAbig.jpg){fig-align="center" width=80%}
+:::
+
+::: {.column width="20%"}
+- (Enter visualization of residuals by neighborhood)
+:::
+:::
+
+## Recommendations  
+::: {.columns}
+::: {.column width="80%"}
+:::
+
+::: {.column width="20%" style="text-align:left;"}
+- Policymakers should be aware that houses in lower-income neighborhoods will not be accurately predicted by this model
+- Physical features of a structure such as the number of bedrooms/bathrooms serve as strong predictors of home sale price. Nearby attractive amenities such as proximity to transit stations as well as distance from crime also contribute.
+:::
+:::
+
+## Limitations & Next Steps  
+::: {.columns}
+::: {.column width="80%"}
+![](midterm_presentation_files/TLAbig.jpg){fig-align="center" width=80%}
+:::
+
+::: {.column width="20%" style="text-align:left;"}
+**Limitations**
+
+- Philadelphia sale prices don't have a linear relationship, particularly among lower-priced homes
+- Variables used were aggregated and not weighted
+:::
+:::
+
+## Questions?  
+::: {.columns}
+::: {.column width="80%"}
+:::
+
+::: {.column width="20%" style="text-align:left;"}
+**Thank you!** <br>
+<br>
+Contact us at: *inquiries@tnc.com*
+:::
+:::

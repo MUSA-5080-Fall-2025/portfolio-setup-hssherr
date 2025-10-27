@@ -35,7 +35,9 @@ website:
           - href: assignments/assignment2/Sywulak-Herr_Henry_assignment2.qmd
             text: "Assignment 2: Spatial Analysis and Visualization"
           - href: assignments/midterm/model_script.qmd
-            text: "Midterm"
+            text: "Midterm - Appendix"
+          - href: assignments/midterm/model_presentation.qmd
+            text: "Midterm - Presentation"
 format:
   html:
     theme: cosmo

@@ -36,7 +36,7 @@ website:
             text: "Assignment 2: Spatial Analysis and Visualization"
           - href: assignments/midterm/model_script.qmd
             text: "Midterm - Appendix"
-          - href: assignments/midterm/model_presentation.qmd
+          - href: assignments/midterm/midterm_presentation.qmd
             text: "Midterm - Presentation"
 format:
   html:

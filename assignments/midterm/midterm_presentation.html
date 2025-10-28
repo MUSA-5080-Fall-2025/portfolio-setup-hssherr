@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html lang="en"><head>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-html/tabby.min.js"></script>
-<script src="../../site_libs/quarto-html/popper.min.js"></script>
-<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
-<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/light-border.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+<script src="midterm_presentation_files/libs/clipboard/clipboard.min.js"></script>
+<script src="midterm_presentation_files/libs/quarto-html/tabby.min.js"></script>
+<script src="midterm_presentation_files/libs/quarto-html/popper.min.js"></script>
+<script src="midterm_presentation_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="midterm_presentation_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="midterm_presentation_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="midterm_presentation_files/libs/quarto-html/quarto-syntax-highlighting-dc55a5b9e770e841cd82e46aadbfb9b0.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.8.24">
 
   <meta name="author" content="Team Name Consulting">
-  <title>Henry Sywulak-Herr - MUSA 5080 Portfolio – Philadelphia Housing Price Prediction</title>
+  <title>Philadelphia Housing Price Prediction</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reset.css">
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/reveal.css">
+  <link rel="stylesheet" href="midterm_presentation_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="midterm_presentation_files/libs/revealjs/dist/reveal.css">
   <style>
     code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
@@ -29,11 +29,12 @@
       vertical-align: middle;
     }
   </style>
-  <link rel="stylesheet" href="../../site_libs/revealjs/dist/theme/quarto-99eeafcedac04850354b682963cedae3.css">
-  <link href="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
-  <link href="../../site_libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
-  <link href="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
-  <link href="../../site_libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <link rel="stylesheet" href="midterm_presentation_files/libs/revealjs/dist/theme/quarto-0fde88a82f0356838740f155f1088782.css">
+  <link rel="stylesheet" href="styles/style.css">
+  <link href="midterm_presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="midterm_presentation_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="midterm_presentation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="midterm_presentation_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
   <style type="text/css">
     .reveal div.sourceCode {
       margin: 0;
@@ -143,70 +144,61 @@ Team Name Consulting
 <h2>Who We Are</h2>
 
 <img data-src="midterm_presentation_files/TeamLogo.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
-<section id="research-question-and-motivation" class="slide level2">
-<h2>Research Question and Motivation</h2>
-<div class="columns">
-<div class="column" style="width:50%;">
+<section id="why-improve-the-model" class="slide level2">
+<h2>Why Improve the Model?</h2>
 <p><strong>Research Question</strong></p>
-<p>Identify which <span style="color:purple;">predictors</span> (spatial, structural, and/or socio-economic) contribute to the most accurate model for the City’s Automated Valuation Model</p>
-</div><div class="column" style="width:50%;">
+<p>Identify which <strong>structural, spatial, and socio-economic</strong> predictors contribute to a more accurate Automated Valuation Model for the City of Philadelphia.</p>
 <p><strong>Motivation</strong></p>
-<p>Residential property tax assessments have <span style="color:purple;">equitable and financial</span> implications for homeowners as well as <span style="color:purple;">fiscal</span> implications for the city</p>
+<p>Improving the accuracy of residential property tax assessment can <strong>mitigate inequity</strong> assessment methods, <strong>increase transparency</strong> in governmental processes, and make analysis more <strong>reliable</strong> and <strong>efficient</strong></p>
+<div class="columns">
+<div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="midterm_presentation_files/3.png" class="quarto-figure quarto-figure-center" style="width:30.0%"></p>
+</figure>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="midterm_presentation_files/4.png" class="quarto-figure quarto-figure-center" style="width:30.0%"></p>
+</figure>
+</div>
+</div><div class="column" style="width:30%;">
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="midterm_presentation_files/6.png" class="quarto-figure quarto-figure-center" style="width:30.0%"></p>
+</figure>
+</div>
 </div></div>
-
-<img data-src="midterm_presentation_files/Skyline.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
+<!-- ![](midterm_presentation_files/Skyline.jpg){fig-align="center" width="100%"} -->
+</section>
 <section id="data-sources" class="slide level2">
 <h2>Data Sources</h2>
 <ul>
-<li><span style="color:purple;">Property Sales</span> (Philadelphia, 2023-2024): City of Philadelphia - OpenDataPhilly</li>
-<li><span style="color:purple;">Socio-Economics</span>: United States Census - American Community Survey</li>
-<li><span style="color:purple;">Spatial Features</span>: City of Philadelphia - OpenDataPhilly</li>
+<li><strong>Property Sales</strong>: (Philadelphia, 2023-2024) City of Philadelphia - OpenDataPhilly</li>
+<li><strong>Socio-Economics</strong>: United States Census - American Community Survey</li>
+<li><strong>Spatial Features</strong>: City of Philadelphia - OpenDataPhilly</li>
 </ul>
-<div class="columns">
-<div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-left">
-<figure>
-<p><img data-src="midterm_presentation_files/Census.png" class="quarto-figure quarto-figure-left" style="width:100.0%"></p>
-</figure>
-</div>
-</div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-right">
-<figure>
-<p><img data-src="midterm_presentation_files/CityofPhiladelphiaLogo.jpg" class="quarto-figure quarto-figure-right" style="width:100.0%"></p>
-</figure>
-</div>
-</div></div>
-</section>
-<section id="spatial-distribution-of-sale-prices-in-philadelphia" class="slide level2">
-<h2>Spatial Distribution of Sale Prices in Philadelphia</h2>
-<div class="columns">
-<div class="column" style="width:80%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="midterm_presentation_files/salepricemap.png" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
-</figure>
-</div>
-</div><div class="column" style="width:20%;">
-<ul>
-<li>Higher sale prices are concentrated in <span style="color:purple;">Central</span> and <span style="color:purple;">Northwest</span> Philadelphia</li>
-</ul>
-</div></div>
-</section>
+
+<!-- ::::: columns -->
+<!-- ::: {.column width="50%"} -->
+<!-- ![](midterm_presentation_files/Census.png){fig-align="left" width="100%"} -->
+<!-- ::: -->
+<!-- ::: {.column width="50%"} -->
+<!-- ![](midterm_presentation_files/CityofPhiladelphiaLogo.jpg){fig-align="right" width="100%"} -->
+<!-- ::: -->
+<!-- ::::: -->
+<img data-src="midterm_presentation_files/sky.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
+<section id="sale-prices-in-philadelphia" class="slide level2">
+<h2>Sale Prices in Philadelphia</h2>
+<p>Higher sale prices are concentrated in <strong>Central</strong> and <strong>Northwest</strong> Philadelphia</p>
+
+<img data-src="midterm_presentation_files/design.png" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
 <section id="factors-impacting-sale-price" class="slide level2">
 <h2>Factors Impacting Sale Price</h2>
-<div class="columns">
-<div class="column" style="width:80%;">
-<div class="quarto-figure quarto-figure-center">
-<figure>
-<p><img data-src="midterm_presentation_files/TLAbig.jpg" class="quarto-figure quarto-figure-center" style="width:80.0%"></p>
-</figure>
-</div>
-</div><div class="column" style="width:20%;">
-<ul>
-<li>There is a notable relationship between <span style="color:purple;">sale price</span> and <span style="color:purple;">total livable area</span></li>
-</ul>
-</div></div>
-</section>
+<p>There is a notable relationship between <strong>sale price</strong> and <strong>total livable area</strong></p>
+
+<img data-src="midterm_presentation_files/TLAbig.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
 <section id="model-comparison" class="slide level2">
 <h2>Model Comparison</h2>
 <table class="caption-top">
@@ -247,43 +239,66 @@ Team Name Consulting
 </tbody>
 </table>
 <ul>
-<li><span style="color:purple;">Model 1</span> (Structural) and <span style="color:purple;">Model 2</span> (Structural + Census) had the worst performance.</li>
-<li><span style="color:purple;">Spatial features</span> (Model 3) and <span style="color:purple;">interaction terms</span> (Model 4) boosted model performance.</li>
+<li><strong>Model 1</strong> (Structural) and <strong>Model 2</strong> (Structural + Census) had the worst performance.</li>
+<li><strong>Spatial features</strong> (Model 3) and <strong>interaction terms</strong> (Model 4) boosted model performance.</li>
 </ul>
 </section>
 <section id="top-predictors" class="slide level2">
 <h2>Top Predictors</h2>
-<div class="column" style="width:70%;">
 <ul>
 <li>In a wealthy neighborhood (<span class="math inline">\(\beta\)</span> = 50,306.450, p &lt; 0.01)</li>
 <li>Number of bedrooms (<span class="math inline">\(\beta\)</span> = 33,544.290, p &lt; 0.01)</li>
 <li>Number of bathrooms (<span class="math inline">\(\beta\)</span> = 29,510.940, p &lt; 0.01)</li>
 </ul>
-</div></section>
+<p>Interpretation: Higher home values in wealthier neighborhoods make sense, especially historically affluent areas with reputational appeal and historic housing stock. Higher numbers of bedrooms and bathrooms tend to indicate more total livable area, which aligns with our observation that total livable area impacts sale price.</p>
+
+<!-- ::::: columns -->
+<!-- ::: {.column width="30%"} -->
+<!-- ![](midterm_presentation_files/house.png){fig-align="center" width="30%"} -->
+<!-- ::: -->
+<!-- ::: {.column width="30%"} -->
+<!-- ![](midterm_presentation_files/bathroom.png){fig-align="center" width="30%"} -->
+<!-- ::: -->
+<!-- ::: {.column width="30%"} -->
+<!-- ![](midterm_presentation_files/bed.png){fig-align="center" width="30%"} -->
+<!-- ::: -->
+<!-- ::::: -->
+<img data-src="midterm_presentation_files/nbd.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
 <section id="model-performance" class="slide level2">
 <h2>Model Performance</h2>
 
 <img data-src="midterm_presentation_files/Final_Model_CV_Scatter.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
-<section id="hardest-to-predict" class="slide level2">
-<h2>Hardest to Predict</h2>
+<section id="model-performance-by-neighborhood-part-1" class="slide level2">
+<h2>Model Performance by Neighborhood (Part 1)</h2>
 <ul>
-<li><span style="color:purple;">Northeast</span> and <span style="color:purple;">West</span> Philly are hardest to predict due to the low income neighborhood limitation of our model</li>
+<li>Neighborhoods in <strong>North Philadelphia</strong> and <strong>West Philadelphia</strong> (with the exception of University City), in addition to <strong>Chinatown</strong> are underpredicted.</li>
+<li><strong>Center City</strong> and parts of <strong>Northeast</strong> and <strong>Northwest</strong> Philadelphia are overpredicted.</li>
 </ul>
-
-<img data-src="midterm_presentation_files/median.png" class="quarto-figure quarto-figure-center r-stretch" style="width:60.0%"></section>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="midterm_presentation_files/nhood_avg_residuals.png" class="quarto-figure quarto-figure-center" height="450"></p>
+</figure>
+</div>
+</section>
+<section id="model-performance-by-neighborhood-part-2" class="slide level2">
+<h2>Model Performance by Neighborhood (Part 2)</h2>
+<ul>
+<li>This suggests local factors not included in the model are having an impact on sale prices.</li>
+<li>A particular area of concern is the underpredicting of sale prices in lower-income neighborhoods in North Philadelphia.</li>
+</ul>
+<div class="quarto-figure quarto-figure-center">
+<figure>
+<p><img data-src="midterm_presentation_files/nhood_avg_residuals.png" class="quarto-figure quarto-figure-center" height="450"></p>
+</figure>
+</div>
+</section>
 <section id="recommendations" class="slide level2">
 <h2>Recommendations</h2>
-<div class="columns">
-<div class="column" style="width:80%;">
-
-</div><div class="column" style="text-align:left;">
 <ul>
-<li>Policymakers should be aware that houses in lower-income neighborhoods will not be accurately predicted by this model</li>
+<li>Policymakers should be aware that houses in lower-income neighborhoods will not be accurately predicted by this model.</li>
 <li>Physical features of a structure such as the number of bedrooms/bathrooms serve as strong predictors of home sale price. Nearby attractive amenities such as proximity to transit stations as well as distance from crime also contribute.</li>
 </ul>
-</div></div>
-
-<img data-src="midterm_presentation_files/houses.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
+</section>
 <section id="limitations-next-steps" class="slide level2">
 <h2>Limitations &amp; Next Steps</h2>
 <!-- :::: columns -->
@@ -297,36 +312,34 @@ Team Name Consulting
 <ul>
 <li>Update the model to account for lower neighborhoods and tailor spatial features to add texture and depth to the model</li>
 </ul>
-
-<img data-src="midterm_presentation_files/House.jpg" class="quarto-figure quarto-figure-center r-stretch" style="width:80.0%"></section>
+</section>
 <section id="questions" class="slide level2">
 <h2>Questions?</h2>
-<p><span style="color:purple;">Thank you!</span> from Sujan, Henry, Ryan, Kavana, Chloe, and Nina :) <br> <br> Contact us at: <em>inquiries@tnc.com</em></p>
-
+<p><strong>Thank you!</strong> from Sujan, Henry, Ryan, Kavana, Chloe, and Nina :) <br> <br> Contact us at: <em>inquiries@tnc.com</em></p>
 
 
 <img data-src="midterm_presentation_files/TeamLogo.png" class="quarto-figure quarto-figure-center r-stretch" style="width:100.0%"></section>
     </div>
   <div class="quarto-auto-generated-content" style="display: none;">
 <div class="footer footer-default">
-<p>Team Name Consulting</p>
+
 </div>
 </div></div>
 
   <script>window.backupDefine = window.define; window.define = undefined;</script>
-  <script src="../../site_libs/revealjs/dist/reveal.js"></script>
+  <script src="midterm_presentation_files/libs/revealjs/dist/reveal.js"></script>
   <!-- reveal.js plugins -->
-  <script src="../../site_libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
-  <script src="../../site_libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
-  <script src="../../site_libs/revealjs/plugin/reveal-menu/menu.js"></script>
-  <script src="../../site_libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
-  <script src="../../site_libs/revealjs/plugin/quarto-support/support.js"></script>
+  <script src="midterm_presentation_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="midterm_presentation_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="midterm_presentation_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="midterm_presentation_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="midterm_presentation_files/libs/revealjs/plugin/quarto-support/support.js"></script>
   
 
-  <script src="../../site_libs/revealjs/plugin/notes/notes.js"></script>
-  <script src="../../site_libs/revealjs/plugin/search/search.js"></script>
-  <script src="../../site_libs/revealjs/plugin/zoom/zoom.js"></script>
-  <script src="../../site_libs/revealjs/plugin/math/math.js"></script>
+  <script src="midterm_presentation_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="midterm_presentation_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="midterm_presentation_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="midterm_presentation_files/libs/revealjs/plugin/math/math.js"></script>
   <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
 
   <script>

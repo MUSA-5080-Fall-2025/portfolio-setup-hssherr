@@ -4,72 +4,74 @@ subtitle: "Improving Property Tax Assessments"
 author: "Team Name Consulting"
 format: 
   revealjs:
-    theme: serif
-    footer: "Team Name Consulting"
+    theme: simple
+    css: styles/style.css
     slide-number: true
     smaller: true
 ---
 
 ## Who We Are
+
 ![](midterm_presentation_files/TeamLogo.png){fig-align="center" width="100%"}
 
-## Research Question and Motivation
+## Why Improve the Model?
 
-::::: columns
-::: {.column width="50%"}
 **Research Question**
 
-Identify which [predictors]{style="color:purple;"} (spatial, structural, and/or socio-economic) contribute to the most accurate model for the City's Automated Valuation Model
-:::
+Identify which **structural, spatial, and socio-economic** predictors contribute to a more accurate Automated Valuation Model for the City of Philadelphia.
 
-::: {.column width="50%"}
 **Motivation**
 
-Residential property tax assessments have [equitable and financial]{style="color:purple;"} implications for homeowners as well as [fiscal]{style="color:purple;"} implications for the city
+Improving the accuracy of residential property tax assessment can **mitigate inequity** assessment methods, **increase transparency** in governmental processes, and make analysis more **reliable** and **efficient**
+
+::::: columns
+::: {.column width="30%"}
+![](midterm_presentation_files/3.png){fig-align="center" width="30%"}
+:::
+
+::: {.column width="30%"}
+![](midterm_presentation_files/4.png){fig-align="center" width="30%"}
+:::
+
+::: {.column width="30%"}
+![](midterm_presentation_files/6.png){fig-align="center" width="30%"}
 :::
 :::::
 
-![](midterm_presentation_files/Skyline.jpg){fig-align="center" width="100%"}
+
+<!-- ![](midterm_presentation_files/Skyline.jpg){fig-align="center" width="100%"} -->
 
 ## Data Sources
 
--   [Property Sales]{style="color:purple;"} (Philadelphia, 2023-2024): City of Philadelphia - OpenDataPhilly
--   [Socio-Economics]{style="color:purple;"}: United States Census - American Community Survey
--   [Spatial Features]{style="color:purple;"}: City of Philadelphia - OpenDataPhilly
+-   **Property Sales**: (Philadelphia, 2023-2024) City of Philadelphia - OpenDataPhilly
+-   **Socio-Economics**: United States Census - American Community Survey
+-   **Spatial Features**: City of Philadelphia - OpenDataPhilly
 
-::::: columns
-::: {.column width="50%"}
-![](midterm_presentation_files/Census.png){fig-align="left" width="100%"}
-:::
+![](midterm_presentation_files/sky.jpg){fig-align="center" width="80%"}
 
-::: {.column width="50%"}
-![](midterm_presentation_files/CityofPhiladelphiaLogo.jpg){fig-align="right" width="100%"}
-:::
-:::::
+<!-- ::::: columns -->
+<!-- ::: {.column width="50%"} -->
+<!-- ![](midterm_presentation_files/Census.png){fig-align="left" width="100%"} -->
+<!-- ::: -->
 
-## Spatial Distribution of Sale Prices in Philadelphia
+<!-- ::: {.column width="50%"} -->
+<!-- ![](midterm_presentation_files/CityofPhiladelphiaLogo.jpg){fig-align="right" width="100%"} -->
+<!-- ::: -->
+<!-- ::::: -->
 
-::::: columns
-::: {.column width="80%"}
-![](midterm_presentation_files/salepricemap.png){fig-align="center" width="80%"}
-:::
+## Sale Prices in Philadelphia
 
-::: {.column width="20%"}
--   Higher sale prices are concentrated in [Central]{style="color:purple;"} and [Northwest]{style="color:purple;"} Philadelphia
-:::
-:::::
+Higher sale prices are concentrated in **Central** and **Northwest** Philadelphia
+
+![](midterm_presentation_files/design.png){fig-align="center" width="80%"}
+
 
 ## Factors Impacting Sale Price
 
-::::: columns
-::: {.column width="80%"}
-![](midterm_presentation_files/TLAbig.jpg){fig-align="center" width="80%"}
-:::
+There is a notable relationship between **sale price** and **total livable area**
 
-::: {.column width="20%"}
--   There is a notable relationship between [sale price]{style="color:purple;"} and [total livable area]{style="color:purple;"}
-:::
-:::::
+![](midterm_presentation_files/TLAbig.jpg){fig-align="center" width="80%"}
+
 
 ## Model Comparison
 
@@ -82,46 +84,61 @@ Residential property tax assessments have [equitable and financial]{style="color
 
 : Model Performance Metrics {.striped .hover tbl-left}
 
--   [Model 1]{style="color:purple;"} (Structural) and [Model 2]{style="color:purple;"} (Structural + Census) had the worst performance.
--   [Spatial features]{style="color:purple;"} (Model 3) and [interaction terms]{style="color:purple;"} (Model 4) boosted model performance.
+-   **Model 1** (Structural) and **Model 2** (Structural + Census) had the worst performance.
+-   **Spatial features** (Model 3) and **interaction terms** (Model 4) boosted model performance.
 
-## Top Predictors 
+## Top Predictors
 
-::: {.column width="20%"}
-- In a wealthy neighborhood ($\beta$ = 50,306.450, p \< 0.01)
-- Number of bedrooms ($\beta$ = 33,544.290, p \< 0.01)
-- Number of bathrooms ($\beta$ = 29,510.940, p \< 0.01)
-:::
-:::
+-   In a wealthy neighborhood ($\beta$ = 50,306.450, p \< 0.01)
+-   Number of bedrooms ($\beta$ = 33,544.290, p \< 0.01)
+-   Number of bathrooms ($\beta$ = 29,510.940, p \< 0.01)
+
+Interpretation: Higher home values in wealthier neighborhoods make sense, especially historically affluent areas with reputational appeal and historic housing stock. Higher numbers of bedrooms and bathrooms tend to indicate more total livable area, which aligns with our observation that total livable area impacts sale price. 
+
+![](midterm_presentation_files/nbd.jpg){fig-align="center" width="100%"}
+
+<!-- ::::: columns -->
+<!-- ::: {.column width="30%"} -->
+<!-- ![](midterm_presentation_files/house.png){fig-align="center" width="30%"} -->
+<!-- ::: -->
+
+<!-- ::: {.column width="30%"} -->
+<!-- ![](midterm_presentation_files/bathroom.png){fig-align="center" width="30%"} -->
+<!-- ::: -->
+
+<!-- ::: {.column width="30%"} -->
+<!-- ![](midterm_presentation_files/bed.png){fig-align="center" width="30%"} -->
+<!-- ::: -->
+<!-- ::::: -->
+
 
 ## Model Performance
 
 ![](midterm_presentation_files/Final_Model_CV_Scatter.png){fig-align="center" width="100%"}
 
+## Model Performance by Neighborhood (Part 1)
+-   Neighborhoods in **North Philadelphia** and **West Philadelphia** (with the exception of University City), in addition to **Chinatown** are underpredicted.
+-   **Center City** and parts of **Northeast** and **Northwest** Philadelphia are overpredicted.
 
-## Hardest to Predict
+![](midterm_presentation_files/nhood_avg_residuals.png){fig-align="center" height="450px"}
 
--   [Northeast]{style="color:purple;"} and [West]{style="color:purple;"} Philly are hardest to predict due to the low income neighborhood limitation of our model
+## Model Performance by Neighborhood (Part 2)
+-   This suggests local factors not included in the model are having an impact on sale prices.
+-   A particular area of concern is the underpredicting of sale prices in lower-income neighborhoods in North Philadelphia.
 
-![](midterm_presentation_files/median.png){fig-align="center" width="60%"}
+![](midterm_presentation_files/nhood_avg_residuals.png){fig-align="center" height="450px"}
 
-## Recommendations  
-::: {.columns}
-::: {.column width="80%"}
-:::
+## Recommendations
 
-::: {.column width="20%" style="text-align:left;"}
-- Policymakers should be aware that houses in lower-income neighborhoods will not be accurately predicted by this model
-- Physical features of a structure such as the number of bedrooms/bathrooms serve as strong predictors of home sale price. Nearby attractive amenities such as proximity to transit stations as well as distance from crime also contribute.
-:::
-:::
-
-![](midterm_presentation_files/houses.jpg){fig-align="center" width="80%"}
+-   Policymakers should be aware that houses in lower-income neighborhoods will not be accurately predicted by this model.
+-   Physical features of a structure such as the number of bedrooms/bathrooms serve as strong predictors of home sale price. Nearby attractive amenities such as proximity to transit stations as well as distance from crime also contribute.
 
 ## Limitations & Next Steps
 
 <!-- :::: columns -->
+
 <!-- ::: {.column width="20%" style="text-align:left;"} -->
+
 **Limitations**
 
 -   Philadelphia sale prices don't have a linear relationship, particularly among lower-priced homes
@@ -131,14 +148,9 @@ Residential property tax assessments have [equitable and financial]{style="color
 
 -   Update the model to account for lower neighborhoods and tailor spatial features to add texture and depth to the model
 
-![](midterm_presentation_files/House.jpg){fig-align="center" width="80%"}
-
 
 ## Questions?
 
-[Thank you!]{style="color:purple;"} from Sujan, Henry, Ryan, Kavana, Chloe, and Nina :) <br>
-<br>
-Contact us at: *inquiries@tnc.com*
+**Thank you!** from Sujan, Henry, Ryan, Kavana, Chloe, and Nina :) <br> <br> Contact us at: *inquiries\@tnc.com*
 
 ![](midterm_presentation_files/TeamLogo.png){fig-align="center" width="100%"}
-

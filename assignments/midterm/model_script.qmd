@@ -57,18 +57,24 @@ table(residential_data$category_code_description)
 # Making sure the file saved to the repo is the trimmed data (to stay below GitHub data limits)
 st_write(residential_data, "./data/OPA_data.geojson", driver = "GeoJSON", delete_dsn = TRUE, quiet = TRUE)
 file.exists("./data/OPA_data.geojson")
-OPA_data <- st_read("./data/OPA_data.geojson", quiet = TRUE) %>% 
+OPA_raw <- st_read("./data/OPA_data.geojson", quiet = TRUE) %>% 
   st_transform(2272)
 
 # OPA_data -> cutting mostly NA columns or irrelevant columns for this model.
-OPA_data <- OPA_data %>%
+OPA_raw <- OPA_raw %>%
   select(-c(
   cross_reference, date_exterior_condition, exempt_land, fireplaces, fuel, garage_type, house_extension, mailing_address_2, mailing_care_of, market_value_date, number_of_rooms, other_building, owner_2, separate_utilities, sewer, site_type, street_direction, suffix, unfinished, unit, utility
   ))
 
-names(OPA_data)
-
+names(OPA_raw)
 ```
+The property sales data was gathered from the OPA properties public data set from the City of Philadelphia. This data set was 32 columns and 583,825 observations. This file was too large for our shared GitHub work space so it was reduced by filtering for residential properties, years 2023 and 2024, location within Philadelphia, and sale price over 10 since some were NA, 1, or 10. This was just enough to get the most basic and general data to work with that ran with GitHub size limits. This reduced the size to 22121 observations. The original geojson file was overwritten and named OPA_data.
+
+Properties selected for residential included apartments >4 units, single family, multi-family, and mixed use. Mixed use was left in as there are still residential unit to account yet add more complex property types to our total data set when comparing sale price and other aspects such as total area to other observations. These properties should also be cross referenced with zoning codes for future research.
+
+We left mixed use in during this process to give us the most general data set representation. There was also limited data cleaning other than omitting columns that were mostly NA. This gave our model the most general data set to work with despite lower future RMSE values. Future research would be needed to most accurately assess the choices of losing data and a more generalized Philadelphia housing market verses very clean data and more specific Philadelphia housing market that may omit certain aspects of the housing market like data in lower income areas or multi use residential aspects. This could have also been conducted in grouping NA values and sparse categories. More complexity could be accounted for in future work.
+
+This was our start simple and add complexity approach. Our original to final OPA data set went from 583,825 to 22,121 observations and from 32 to 68 variables.
 
 ## Exploratory Data Analysis
 
@@ -77,7 +83,7 @@ Below are selected property variables—Total Livable Area, Bedrooms, Bathrooms,
 ```{r filtering-OPA-and-plots}
 
 # filter out outliers from the dataset
-OPA_data <- OPA_data %>%
+OPA_data <- OPA_raw %>%
   filter(
     total_livable_area <= 10000,
     year_built > 1800,
@@ -189,10 +195,12 @@ nrow(nhoods)
 st_crs(neighbor_points)
 nhoods <- st_transform(nhoods, 2272)
 
-#joining houses to  neighborhoods
+#joining houses to neighborhoods
 neighbor_points <- neighbor_points %>%
-  st_join(nhoods, join = st_intersects)
+  st_join(., nhoods, join = st_intersects)
 
+# one property doesn't lie in any neighborhood
+neighbor_points <- neighbor_points[!is.na(neighbor_points$NAME),]
 
 #results 
 neighbor_points %>%
@@ -214,7 +222,7 @@ price_by_nhood <- neighbor_points %>%
   )
 
 nhoods_prices <- nhoods %>%
-  left_join(price_by_nhood, by = "NAME")
+  left_join(., price_by_nhood, by = "NAME")
 
 #setting median house price classes
 nhoods_prices <- nhoods_prices %>%
@@ -232,12 +240,12 @@ ggplot() +
           color = "white", size = 0.5) +
   scale_fill_brewer(
     name = "Median Price",
-    palette = "YlOrRd",  # Try also: "Reds", "OrRd", "YlGnBu", "PuRd"
+    palette = "YlOrRd",
     na.value = "grey90",
-    direction = 1  # Use -1 to reverse (dark = low)
+    direction = 1
   ) +
   labs(
-    title = "Median Home Prices by Philadlephia Neighborhood",
+    title = "Median Home Prices by Philadelphia Neighborhood",
   ) +
   theme_void() +
   theme(
@@ -270,16 +278,12 @@ price_by_nhood %>%
 
 ```
 
-```{r weaththy-neighborhood-effects}
+```{r wealthy-neighborhood-effects}
 
 # Define wealthy as >=$420,000 which is 1.5x city median of 279,900
-wealthy_hoods <- c("FITLER_SQUARE", "CHESTNUT_HILL", "UNIVERISTY_CITY", "SPRUCE_HILL", "QUEEN_VILLAGE", "GRADUATE_HOSPITAL", "PACKER_PARK", "RITTENHOUSE", "NORTHERN_LIBERTIES", "HAWTHORNE", "FANCISVILLE", "BELLA_VISTA", "SOCIETY_HILL", "GARDEN_COURT", "CEDAR_PARK", "EAST_PARK", "MOUNT_AIRY_WEST", "FAIRMOUNT", "LOGAN_SQUARE", "WOODLAND_TERRACE", "RIVERFRONT", "PASSYUNK_SQUARE", "ROXBOROUGH_PARK", "OLD_KENSINGTON", "WASHINGTON_SQUARE", "FISHTOWN"
-)
-
-# Binary Split 
 nhoods_prices <- nhoods_prices %>%
   mutate(
-    wealthy_neighborhood = ifelse(NAME %in% wealthy_hoods, "Wealthy", "Not Wealthy"),
+    wealthy_neighborhood = ifelse(median_price >= 420000, "Wealthy", "Not Wealthy"),
     wealthy_neighborhood = as.factor(wealthy_neighborhood)
   )
 
@@ -288,7 +292,11 @@ nhoods_prices %>%
   count(wealthy_neighborhood)
 
 neighbor_points <- neighbor_points %>%
-  st_join(nhoods_prices, by = "NAME")
+  left_join(.,
+            nhoods_prices %>%
+              st_drop_geometry %>%
+              select(NAME, wealthy_neighborhood),
+            by = "NAME")
 
 # Still add neighbor points to OPA data
 
@@ -492,6 +500,11 @@ schools <- if (any(st_geometry_type(schools_polygons) %in% c("POLYGON","MULTIPOL
 } else {
   schools_polygons
 }
+
+#crop transit data to philadelphia
+philly_boundary <- st_union(nhoods)
+
+transit <- st_filter(transit, philly_boundary, .predicate = st_within)
 ```
 
 ## Exploratory Data Analysis
@@ -502,36 +515,46 @@ Exploratory plots and maps examine the raw accessibility patterns across Philade
 
 # Transit stops (raw)
 ggplot() +
-geom_sf(data = transit, size = 0.3, alpha = 0.6) +
-labs(title = "Raw Layer Check: Transit Stops (SEPTA Spring 2025)") +
-theme_minimal()
+  geom_sf(data = nhoods, 
+          fill = NA, color = "grey70", linewidth = 0.3) +
+  geom_sf(data = transit, size = 0.3, alpha = 0.6) +
+  labs(title = "Raw Layer Check: Transit Stops (SEPTA Spring 2025)") +
+  theme_void()
 
 # Hospitals (raw)
 ggplot() +
-geom_sf(data = hospitals, size = 0.6, alpha = 0.7) +
-labs(title = "Raw Layer Check: Hospitals") +
-theme_minimal()
+  geom_sf(data = nhoods, 
+          fill = NA, color = "grey70", linewidth = 0.3) +
+  geom_sf(data = hospitals, size = 0.6, alpha = 0.7) +
+  labs(title = "Raw Layer Check: Hospitals") +
+  theme_void()
 
 # Parks & Recreation Program Sites (raw)
 ggplot() +
-geom_sf(data = parksrec, size = 0.4, alpha = 0.6) +
-labs(title = "Raw Layer Check: Parks & Recreation Sites") +
-theme_minimal()
+  geom_sf(data = nhoods, 
+          fill = NA, color = "grey70", linewidth = 0.3) +
+  geom_sf(data = parksrec, size = 0.4, alpha = 0.6) +
+  labs(title = "Raw Layer Check: Parks & Recreation Sites") +
+  theme_void()
 
 # Schools (centroids of polygons) — raw
 ggplot() +
-geom_sf(data = schools, size = 0.4, alpha = 0.7) +
-labs(title = "Raw Layer Check: Schools (Centroids)") +
-theme_minimal()
+  geom_sf(data = nhoods, 
+          fill = NA, color = "grey70", linewidth = 0.3) +
+  geom_sf(data = schools, size = 0.4, alpha = 0.7) +
+  labs(title = "Raw Layer Check: Schools (Centroids)") +
+  theme_void()
 
 # Crime points are huge; sampling for speed
 set.seed(5080)
 crime_quick <- if (nrow(crime) > 30000) dplyr::slice_sample(crime, n = 30000) else crime
 
 ggplot() +
-geom_sf(data = crime_quick, size = 0.1, alpha = 0.25) +
-labs(title = "Raw Layer Check: Crime Incidents (sampled if large)") +
-theme_minimal()
+  geom_sf(data = nhoods, 
+          fill = NA, color = "grey70", linewidth = 0.3) +
+  geom_sf(data = crime_quick, size = 0.1, alpha = 0.25) +
+  labs(title = "Raw Layer Check: Crime Incidents (sampled if large)") +
+  theme_void()
 
 ```
 
@@ -620,7 +643,7 @@ OPA_points <- OPA_points %>%
 ### Summary Table and Justification
 
 | Feature                          | Method       | Parameter   | Theoretical Rationale                                                                                                           |
-|------------------|------------------|------------------|--------------------|
+|-------------|-------------|-------------|---------------------------------|
 | Distance to Nearest Transit Stop | kNN (k = 1)  | –           | Captures ease of access to public transport; nearest stop approximates walkability and job access.                              |
 | Distance to Nearest Hospital     | kNN (k = 1)  | –           | Reflects accessibility to health care and emergency services; proximity adds perceived security for households.                 |
 | Parks & Rec Sites within 0.25 mi | Buffer Count | r = 0.25 mi | Measures exposure to green space and recreational facilities within a 5-minute walk; positive amenity effect on property value. |
@@ -642,11 +665,13 @@ ggplot(OPA_points, aes(x = dist_nearest_transit_ft)) +
   theme_minimal()
 
 ggplot(OPA_points) +
+  geom_sf(data = nhoods, 
+          fill = NA, color = "grey70", linewidth = 0.3) +
   geom_sf(aes(color = dist_nearest_transit_ft), size = 0.5) +
   scale_color_viridis_c(option = "plasma", labels = comma) +
   labs(title = "Transit Accessibility Across Sales Parcels",
        color = "Distance (ft)") +
-  theme_minimal()
+  theme_void()
 
 ## Hospital Proximity
 ggplot(OPA_points, aes(x = dist_nearest_hospital_ft)) +
@@ -656,11 +681,13 @@ ggplot(OPA_points, aes(x = dist_nearest_hospital_ft)) +
   theme_minimal()
 
 ggplot(OPA_points) +
+  geom_sf(data = nhoods, 
+          fill = NA, color = "grey70", linewidth = 0.3) +
   geom_sf(aes(color = dist_nearest_hospital_ft), size = 0.5) +
   scale_color_viridis_c(option = "magma", labels = comma) +
   labs(title = "Hospital Accessibility Across Sales Parcels",
        color = "Distance (ft)") +
-  theme_minimal()
+  theme_void()
 
 ## Parks & Recreation
 ggplot(OPA_points, aes(x = parks_cnt_0p25mi)) +
@@ -670,13 +697,15 @@ ggplot(OPA_points, aes(x = parks_cnt_0p25mi)) +
   theme_minimal()
 
 ggplot(OPA_points) +
+  geom_sf(data = nhoods, 
+          fill = NA, color = "grey70", linewidth = 0.3) +
   geom_sf(aes(color = parks_cnt_0p25mi), size = 0.6) +
   scale_color_viridis_c(option = "viridis") +
   labs(title = "Proximity to Parks & Recreation (0.25 mi Buffer)",
        color = "Parks Count") +
-  theme_minimal()
+  theme_void()
 
-## Crime Density
+## Crime Counts
 ggplot(OPA_points, aes(x = crime_cnt_0p5mi)) +
   geom_histogram(fill = "firebrick", color = "white", bins = 30) +
   labs(title = "Distribution: Crime Incidents Within 0.5 mi",
@@ -684,11 +713,13 @@ ggplot(OPA_points, aes(x = crime_cnt_0p5mi)) +
   theme_minimal()
 
 ggplot(OPA_points) +
+  geom_sf(data = nhoods, 
+          fill = NA, color = "grey70", linewidth = 0.3) +
   geom_sf(aes(color = log1p_crime_cnt_0p5), size = 0.6) +
   scale_color_viridis_c(option = "inferno") +
   labs(title = "Crime Exposure (log-transformed within 0.5 mi)",
        color = "log(1+Crime Count)") +
-  theme_minimal()
+  theme_void()
 
 ## Schools Accessibility
 ggplot(OPA_points, aes(x = schools_cnt_0p5mi)) +
@@ -698,11 +729,13 @@ ggplot(OPA_points, aes(x = schools_cnt_0p5mi)) +
   theme_minimal()
 
 ggplot(OPA_points) +
+  geom_sf(data = nhoods, 
+          fill = NA, color = "grey70", linewidth = 0.3) +
   geom_sf(aes(color = schools_cnt_0p5mi), size = 0.6) +
   scale_color_viridis_c(option = "cividis") +
   labs(title = "School Accessibility (0.5 mi Buffer)",
        color = "Schools Count") +
-  theme_minimal()
+  theme_void()
 ```
 
 **Interpretation:**
@@ -717,7 +750,6 @@ ggplot(OPA_points) +
 
 -   **School proximity**: Uniform urban coverage with typical parcels having 4-7 schools within 0.5 mi.
 
-Nina Histogram + map
 
 ```{r sales-data-histogram}
 sp_data <- st_read("./data/OPA_data.geojson", quiet = T)
@@ -837,6 +869,8 @@ Our first model uses structural property characteristics to build a multiple lin
 
 ```{r model-1}
 
+model1_data <- na.omit(OPA_points)
+
 model1 <- lm(
   sale_price ~ 
     total_livable_area +
@@ -844,7 +878,7 @@ model1 <- lm(
     number_of_bathrooms +
     building_age,
 
-  data = na.omit(OPA_points)
+  data = model1_data
 )
 
 summary(model1)
@@ -855,6 +889,8 @@ summary(model1)
 Our second model builds on the structural property characteristics regression by incorporating census tract–level variables, including population, median household income, and median age.
 
 ```{r model-2}
+
+model2_data <- na.omit(OPA_points)
 
 model2 <- lm(
   sale_price ~ 
@@ -867,7 +903,7 @@ model2 <- lm(
     med_hh_incE +
     med_ageE,            
     
-  data = na.omit(OPA_points)
+  data = model2_data
 )
 
 summary(model2)
@@ -876,6 +912,8 @@ summary(model2)
 ## Model 3: Incorporation of Spatial Features
 
 ```{r model-3}
+
+model3_data <- na.omit(OPA_points)
 
 model3 <- lm(
   sale_price ~ 
@@ -894,7 +932,7 @@ model3 <- lm(
     parks_cnt_0p25mi +
     log1p_crime_cnt_0p5,
     
-  data = na.omit(OPA_points)
+  data = model3_data
 )
 
 summary(model3)
@@ -906,31 +944,17 @@ summary(model3)
 ```{r luxury-premium-hypothesis}
 
 # join data separately here to avoid conflicts with earlier code blocks
-neighbor_points_unique <- neighbor_points %>%
-  st_drop_geometry() %>%
-  distinct(census_tract, .keep_all = TRUE)
-
-neighbor_points_unique <- neighbor_points %>%
-  st_drop_geometry() %>%
-  group_by(census_tract) %>%
-  dplyr::summarize(
-    wealthy_neighborhood = first(wealthy_neighborhood),
-    n_sales = mean(n_sales, na.rm = TRUE),
-    median_price = mean(median_price, na.rm = TRUE),
-    price_class = first(price_class)
-  )
-
-OPA_points_copy <- OPA_points
-
-OPA_points_copy <- OPA_points_copy %>%
-  left_join(
-    neighbor_points_unique,
-    by = "census_tract"
-  )
+OPA_points_copy <- left_join(OPA_points,
+                             neighbor_points %>%
+                               select(parcel_number, wealthy_neighborhood) %>%
+                               st_drop_geometry(),
+                             by = "parcel_number")
 
 ```
 
 ```{r model-4}
+
+model4_data <- na.omit(OPA_points_copy)
 
 model4 <- lm(
   sale_price ~ 
@@ -959,7 +983,7 @@ model4 <- lm(
     int_larea_beds,
     
                      
-  data = na.omit(OPA_points_copy)
+  data = model4_data
 )
 
 summary(model4)
@@ -1101,6 +1125,14 @@ cv_results <- data.frame(
         model3_cv$results$RMSE,
         model4_cv$results$RMSE
       ),
+  
+  log_RMSE = c(
+        log(model1_cv$results$RMSE),
+        log(model2_cv$results$RMSE),
+        log(model3_cv$results$RMSE),
+        log(model4_cv$results$RMSE)
+      ),
+  
     MAE = c(
         model1_cv$results$MAE,
         model2_cv$results$MAE,
@@ -1186,7 +1218,53 @@ plot(model4)
 
 ```
 
-In the plot of residuals versus fitted values, the data largely displays a random distribution except for a spike in low sale price values. This indicates that the model might be poorly predicting for low sale price values as they don't follow an entirely linear pattern. However, there was no visible cone shape in the data, which was a promising sign that this discrepancy was not due to a trend consistent across the entire dataset. The Q-Q plot indicates that residual values are not perfectly normally distributed, further confirming that the dataset does not seem to display a linear relationship around extreme values. However, an analysis of the residuals in a Cook's Distance plot indicates that despite this lack of normality in the dependent variable, none of the observations are extraordinarily influential. These violations were therefore deemed mild enough to not warrant intervention.
+In the plot of residuals versus fitted values, the data largely displays a random distribution except for a spike in low sale price values. This indicates that the model might be poorly predicting for low sale price values as they don't follow an entirely linear pattern. However, there was no visible cone shape in the data, which was a promising sign that this discrepancy was not due to a trend consistent across the entire dataset. This discrepancy is suspected to follow a neighborhood based spatial pattern, and that exploration is done below. The Q-Q plot indicates that residual values are not perfectly normally distributed, further confirming that the dataset does not seem to display a linear relationship around extreme values. However, an analysis of the residuals in a Cook's Distance plot indicates that despite this lack of normality in the dependent variable, none of the observations are extraordinarily influential. These violations were therefore deemed mild enough to not warrant intervention.
+
+```{r residual-neighborhood-prep}
+
+OPA_points_clean <- na.omit(OPA_points_copy)
+OPA_points_clean$residuals <- residuals(model4)
+
+points_with_nhoods <- st_join(OPA_points_clean, nhoods)
+
+avg_residuals_by_nhood <- points_with_nhoods %>%
+  st_drop_geometry() %>%
+  group_by(NAME) %>%
+  summarise(
+    avg_residual = mean(residuals, na.rm = TRUE),
+    n_properties = n()
+  )
+
+nhoods_with_residuals <- nhoods %>%
+  left_join(avg_residuals_by_nhood, by = "NAME")
+```
+
+```{r residual-neighborhood-map}
+ggplot(nhoods_with_residuals) +
+  geom_sf(aes(fill = avg_residual), color = "white", size = 0.15) +
+  scale_fill_gradient2(
+    low = "red",
+    mid = "gray90",
+    high = "purple",
+    midpoint = 0,
+    name = "Avg Residual ($)",
+    limits = c(-1, 1) * max(abs(nhoods_with_residuals$avg_residual), na.rm = TRUE)
+  ) +
+  theme_minimal() +
+  labs(
+    title = "Model Performance by Neighborhood",
+    subtitle = "Purple = Over-prediction \nRed = Under-prediction"
+  ) +
+  theme(
+    axis.text = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid = element_blank(),
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(size = 10),
+    legend.position = "right",
+  )
+```
+The results of this map confirm suspicions of local parameters affecting sale price, and should guide future work as explained in the following section.
 
 # Conclusion and Recommendations
 

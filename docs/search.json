@@ -1068,7 +1068,7 @@
     "href": "assignments/midterm/midterm_presentation.html#data-sources",
     "title": "Philadelphia Housing Price Prediction",
     "section": "Data Sources",
-    "text": "Data Sources\n\nProperty Sales (Philadelphia, 2023-2024): City of Philadelphia - OpenDataPhilly\nSocio-Economics: United States Census - American Community Survey\nSpatial Features: City of Philadelphia - OpenDataPhilly"
+    "text": "Data Sources\n\nProperty Sales: (Philadelphia, 2023-2024) City of Philadelphia - OpenDataPhilly\nSocio-Economics: United States Census - American Community Survey\nSpatial Features: City of Philadelphia - OpenDataPhilly"
   },
   {
     "objectID": "assignments/midterm/midterm_presentation.html#spatial-distribution-of-sale-prices-in-philadelphia",
@@ -1082,7 +1082,7 @@
     "href": "assignments/midterm/midterm_presentation.html#factors-impacting-sale-price",
     "title": "Philadelphia Housing Price Prediction",
     "section": "Factors Impacting Sale Price",
-    "text": "Factors Impacting Sale Price\n\n\n\n\n\n\n\n\n\nThere is a notable relationship between sale price and total livable area"
+    "text": "Factors Impacting Sale Price\nThere is a notable relationship between sale price and total livable area"
   },
   {
     "objectID": "assignments/midterm/midterm_presentation.html#model-comparison",
@@ -1096,7 +1096,7 @@
     "href": "assignments/midterm/midterm_presentation.html#top-predictors",
     "title": "Philadelphia Housing Price Prediction",
     "section": "Top Predictors",
-    "text": "Top Predictors\n\n\nIn a wealthy neighborhood (\\(\\beta\\) = 50,306.450, p &lt; 0.01)\nNumber of bedrooms (\\(\\beta\\) = 33,544.290, p &lt; 0.01)\nNumber of bathrooms (\\(\\beta\\) = 29,510.940, p &lt; 0.01)"
+    "text": "Top Predictors\n\nIn a wealthy neighborhood (\\(\\beta\\) = 50,306.450, p &lt; 0.01)\nNumber of bedrooms (\\(\\beta\\) = 33,544.290, p &lt; 0.01)\nNumber of bathrooms (\\(\\beta\\) = 29,510.940, p &lt; 0.01)\n\nInterpretation: Higher home values in wealthier neighborhoods make sense, especially historically affluent areas with reputational appeal and historic housing stock. Higher numbers of bedrooms and bathrooms tend to indicate more total livable area, which aligns with our observation that total livable area impacts sale price."
   },
   {
     "objectID": "assignments/midterm/midterm_presentation.html#model-performance",
@@ -1117,7 +1117,7 @@
     "href": "assignments/midterm/midterm_presentation.html#recommendations",
     "title": "Philadelphia Housing Price Prediction",
     "section": "Recommendations",
-    "text": "Recommendations\n\n\n\n\n\nPolicymakers should be aware that houses in lower-income neighborhoods will not be accurately predicted by this model\nPhysical features of a structure such as the number of bedrooms/bathrooms serve as strong predictors of home sale price. Nearby attractive amenities such as proximity to transit stations as well as distance from crime also contribute."
+    "text": "Recommendations\n\nPolicymakers should be aware that houses in lower-income neighborhoods will not be accurately predicted by this model.\nPhysical features of a structure such as the number of bedrooms/bathrooms serve as strong predictors of home sale price. Nearby attractive amenities such as proximity to transit stations as well as distance from crime also contribute."
   },
   {
     "objectID": "assignments/midterm/midterm_presentation.html#limitations-next-steps",
@@ -2266,5 +2266,33 @@
     "title": "Week 6 Notes - Spatial Machine Learning & Advanced Regression",
     "section": "Cross-Validation",
     "text": "Cross-Validation\n\nDifferent types:\n\nTrain/Test Splite → 80/20 split, simple but unstable method\nk-Fold Cross-Validation → split into k folds, train on k-1, test on 1, repeat across all “folds” allowing each to have a chance at being a training and testing dataset\nLOOCV → leave one observation out at a time (special case of k-fold)\n\nk-Fold CV helps tell us how well models predict NEW data, is more honest than in-sample R2, and helps detect overfitting\n\nCategorical variables require that there’s enough data in each category so that samples always include all examples of the categorical variable\nThis makes k-Fold CV useful typically only in large datasets"
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#why-improve-the-model",
+    "href": "assignments/midterm/midterm_presentation.html#why-improve-the-model",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Why Improve the Model?",
+    "text": "Why Improve the Model?\nResearch Question\nIdentify which structural, spatial, and socio-economic predictors contribute to a more accurate Automated Valuation Model for the City of Philadelphia.\nMotivation\nImproving the accuracy of residential property tax assessment can mitigate inequity assessment methods, increase transparency in governmental processes, and make analysis more reliable and efficient"
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#sale-prices-in-philadelphia",
+    "href": "assignments/midterm/midterm_presentation.html#sale-prices-in-philadelphia",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Sale Prices in Philadelphia",
+    "text": "Sale Prices in Philadelphia\nHigher sale prices are concentrated in Central and Northwest Philadelphia"
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#model-performance-by-neighborhood-part-1",
+    "href": "assignments/midterm/midterm_presentation.html#model-performance-by-neighborhood-part-1",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Model Performance by Neighborhood (Part 1)",
+    "text": "Model Performance by Neighborhood (Part 1)\n\nNeighborhoods in North Philadelphia and West Philadelphia (with the exception of University City), in addition to Chinatown are underpredicted.\nCenter City and parts of Northeast and Northwest Philadelphia are overpredicted."
+  },
+  {
+    "objectID": "assignments/midterm/midterm_presentation.html#model-performance-by-neighborhood-part-2",
+    "href": "assignments/midterm/midterm_presentation.html#model-performance-by-neighborhood-part-2",
+    "title": "Philadelphia Housing Price Prediction",
+    "section": "Model Performance by Neighborhood (Part 2)",
+    "text": "Model Performance by Neighborhood (Part 2)\n\nThis suggests local factors not included in the model are having an impact on sale prices.\nA particular area of concern is the underpredicting of sale prices in lower-income neighborhoods in North Philadelphia."
   }
 ]

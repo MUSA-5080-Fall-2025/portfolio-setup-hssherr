@@ -1,19 +1,33 @@
 ---
 title: "Week 8 Notes - Predictive Policing"
 date: "2025-11-03"
+editor: 
+  markdown: 
+    wrap: 72
 ---
 
-Poisson Regression
-- Used speciifically for data where the model is mostly counts
-- Predicting crime through items of disorder (cashed can, loud neighhors, etc.)
-Spatial Weights Matrix:
-- Local Mora's I Forumla: instead of getting a normalized values, local Moran's I creates a value for each other
-- Linear Regression is not good for count variables (1, 2, 3, 4, etc.) since it 
-- In a Poisson Distribution, your data's mean always equals the distribution's 
-- Coefficients from a Poisson regression are on a log scale, requiring exponential conversion to interpret
-- Unlike OLS, we don't use residual plots the same way (check slides)
-- link("log") is a way for the Poisson and similar non-linear distributions to...
-Spatial Cross-Validation
-- Leave out entire spatial groups that, by their nature, influence each other (and therefore will influence the result of k-fold CV) rather than leaving out individual data points within those spatial groups.
-LISA (Local Indicators of Spatial Association)
-- 
+### Poisson Regression
+
+-   Used speciifically for data where the model is mostly counts
+-   Predicting crime through items of disorder (cashed can, loud
+    neighhors, etc.)
+
+### Spatial Weights Matrix:
+
+-   Local Mora's I Forumla: instead of getting a normalized values,
+    local Moran's I creates a value for each other
+-   Linear Regression is not good for count variables (1, 2, 3, 4, etc.)
+    since it
+-   In a Poisson Distribution, your data's mean always equals the
+    distribution's
+-   Coefficients from a Poisson regression are on a log scale, requiring
+    exponential conversion to interpret
+-   Unlike OLS, we don't use residual plots the same way (check slides)
+-   link("log") is a way for the Poisson and similar non-linear
+    distributions to... Spatial \### Cross-Validation
+-   Leave out entire spatial groups that, by their nature, influence
+    each other (and therefore will influence the result of k-fold CV)
+    rather than leaving out individual data points within those spatial
+    groups.
+
+### LISA (Local Indicators of Spatial Association)

@@ -6,9 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2025-09-29">
+<meta name="dcterms.date" content="2025-11-10">
 
-<title>Week 4 Notes - Spatial Analysis in R – Henry Sywulak-Herr - MUSA 5080 Portfolio</title>
+<title>Week 10 Notes - Logistic Regression – Henry Sywulak-Herr - MUSA 5080 Portfolio</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -193,8 +193,7 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#spatial-data-fundamentals" id="toc-spatial-data-fundamentals" class="nav-link active" data-scroll-target="#spatial-data-fundamentals">Spatial Data Fundamentals</a></li>
-  <li><a href="#coordinate-reference-systems" id="toc-coordinate-reference-systems" class="nav-link" data-scroll-target="#coordinate-reference-systems">Coordinate Reference Systems</a></li>
+  <li><a href="#logistic-regression" id="toc-logistic-regression" class="nav-link active" data-scroll-target="#logistic-regression">Logistic Regression</a></li>
   </ul>
 </nav>
     </div>
@@ -203,7 +202,7 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Week 4 Notes - Spatial Analysis in R</h1>
+<h1 class="title">Week 10 Notes - Logistic Regression</h1>
 </div>
 
 
@@ -214,7 +213,7 @@ ul.task-list li input[type="checkbox"] {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">September 29, 2025</p>
+      <p class="date">November 10, 2025</p>
     </div>
   </div>
   
@@ -226,57 +225,28 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="spatial-data-fundamentals" class="level2">
-<h2 class="anchored" data-anchor-id="spatial-data-fundamentals">Spatial Data Fundamentals</h2>
+<section id="logistic-regression" class="level3">
+<h3 class="anchored" data-anchor-id="logistic-regression">Logistic Regression</h3>
 <ul>
-<li>Shapefile structure: three primary files (.shp = geometry, .dbf = tabular data, .shx = )</li>
-<li>On some open data portals, there is a way to directly import spatial layers into R (if it’s an ArcGIS Online site) by going to the bottom “I want to use this” and using the API call.</li>
-</ul>
-</section>
-<section id="coordinate-reference-systems" class="level2">
-<h2 class="anchored" data-anchor-id="coordinate-reference-systems">Coordinate Reference Systems</h2>
+<li>The logit is equal to taking the log of the odds ratio
 <ul>
-<li>The Earth is round, maps are flat → we can’t preserve area, distance, and angles simultaneously</li>
-<li>All projections cause some distortions in the true shape of the Earth</li>
-<li>You cannot use a projection system that uses lat/lon to calculate area</li>
-<li>The shape of the Earth is a <strong>geoid</strong>, an imperfect sphere due to terrain
-<ul>
-<li>Step 1: Approximate Earth’s shape with an <strong>ellipsoid</strong> with a uniform surface</li>
-<li>Step 2: Tie the ellipsoid to the real Earth (create a <strong>datum</strong>)</li>
-<li>Step 3: Overlay your lat/lon grid
-<ul>
-<li>North American Datum 1927 (NAD27) → centered on Meades Ranch, Kansas</li>
-<li>NAD83 → earth centered</li>
-<li>WGS84 → also earth centered, but uses a different ellipsoid approximation</li>
-<li>*All of these are Geographic (geodetic) coordinate systems that utilize lat/lon</li>
+<li>OR &gt; 1 = greater odds of outcome</li>
+<li>OR &lt; 1 = lower odds of outcome</li>
 </ul></li>
-<li>Projecting a 3D Shape onto a 2D shape
+<li>Output values are probabilities of an event occurring
 <ul>
-<li>Cylindrical Projection → wrapping a rectangular sheet around the ellipsoid with its cylindrical axis parallel to the poles (i.e.&nbsp;“Mercator Projection”)
-<ul>
-<li>Line of Tangency refers to where a continuous line on the 3D shape aligns entirely with the x axis of the sheet</li>
+<li>Choosing a cutoff is an imperfect art</li>
+<li>If you classify a potential spam email with a probability of 0.72 as spam, but it actually was not, what does that say about the cutoff? Confusion Matrices</li>
 </ul></li>
-<li>Transverse Cylindrical → wrapping the cylinder around the ellipsoid, but now the cylindrical axis is parallel to the equatorial plane</li>
-<li>Conic projections → wrapping the sheet around in a cone shape with the line of tangency running through the locations you want to study (reduces distortions)</li>
-</ul></li>
-<li><strong>SADD</strong> Acronym → things that can be distorted when projecting
-<ul>
-<li>Shape, Area, Distance, Direction</li>
-</ul></li>
-<li>Projected Coordinate Systems
-<ul>
-<li>UTM (Universal Transverse Mercator) → developed by the military by dividing a Mercator Projection into 6 degree segments (60 total)
-<ul>
-<li>Typically denoted by a <strong>False Northing</strong> and a <strong>False Easting</strong></li>
-</ul></li>
-<li>State Plane → each state has its own projection method, highly localized (on a global scale) to minimize distortions
-<ul>
-<li>Typically conic</li>
-<li>PA has two, one for northern PA and one for southern PA (both in feet/meters)</li>
-</ul></li>
-</ul></li>
-</ul></li>
-<li>For quiz next week: questions on the “Path of Despair” vs.&nbsp;the “Path of Happiness” when it comes to projecting layers to coordinate systems in R (i.e.&nbsp;use st_crs always unless the layer just does not have a coordinate system)</li>
+<li>Sensitivity = TP / TP + FN</li>
+<li>Specificity = TN / TN + FP</li>
+<li>Precision = TP / TP + FP</li>
+<li>Accuracy = TP + TN / Total ROC Curve</li>
+<li>“Receiver Operating Characteristic”</li>
+<li>As you go up the y-axis you capture more true positives, as you go across the x-axis you are capturing more false positives (units are fractions of total = proportion)</li>
+<li>If you choose a true positive rate threshold (coords: 0.35, 0.80), you can say that if you achieve an 80% true positive rate you will also have a 35% false positive rate</li>
+<li>Goal is to maximize AUC (area under the curve) value Handling Large Amounts of Zeros</li>
+<li>“Cooking the books” is to just remove the zeros</li>
 </ul>
 
 

@@ -42,7 +42,7 @@ website:
             text: "Midterm - Appendix"
           - href: assignments/midterm/Carlsen_Drake_Kakumanu_Raju_Robinson_Sywulak-Herr_Presentation.qmd
             text: "Midterm - Presentation"
-          - href: assignment/assignment4/Sywulak-Herr_Henry_assignment4.qmd
+          - href: assignments/assignment4/Sywulak-Herr_Henry_assignment4.qmd
             text: "Assignment 4: Spatial Predictive Analysis"
 format:
   html:

@@ -1,0 +1,24 @@
+---
+title: "Week 8 Notes - Predictive Policing"
+date: "2025-11-03"
+---
+
+Logistic Regression
+- The logit is equal to taking the log of the odds ratio
+  - OR > 1 = greater odds of outcome
+  - OR < 1 = lower odds of outcome
+- Output values are probabilities of an event occurring
+  - Choosing a cutoff is an imperfect art
+  - If you classify a potential spam email with a probability of 0.72 as spam, but it actually was not, what does that say about the cutoff?
+Confusion Matrices
+- Sensitivity = TP / TP + FN
+- Specificity = TN / TN + FP
+- Precision = TP / TP + FP
+- Accuracy = TP + TN / Total
+ROC Curve
+- "Receiver Operating Characteristic"
+- As you go up the y-axis you capture more true positives, as you go across the x-axis you are capturing more false positives (units are fractions of total = proportion)
+- If you choose a true positive rate threshold (coords: 0.35, 0.80), you can say that if you achieve an 80% true positive rate you will also have a 35% false positive rate
+- Goal is to maximize AUC (area under the curve) value
+Handling Large Amounts of Zeros
+- "Cooking the books" is to just remove the zeros

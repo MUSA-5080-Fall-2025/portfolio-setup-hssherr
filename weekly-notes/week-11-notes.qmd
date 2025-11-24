@@ -1,0 +1,24 @@
+---
+title: "Week 11 Notes - Space-Time Prediction"
+date: "2025-11-17"
+---
+
+- **Cross-Sectional Data** &rarr; "snapshot" data that is for a specific point in time
+- **Panel Data** &rarr; same thing observed over time
+- **Temporal Features** &rarr; what happened last hour?
+- **Space-Time Interaction** &rarr; different patterns observable by location *and* time
+- Variant observations change with each row (hour), invariant data does not (day of the week)
+- Binning data helps us aggregate data into easier-to-process groups
+  - The smaller the bin, however, the more **sparse** (more zeros) the data will become
+
+### Temporal Lags
+
+- **Temporal Lag** &rarr; If past data is available, you can use demand *trends* to predict future demand
+  - Displace the demand in time by a certain amount (1hr, 12hr, 1day, etc.) and you get a picture of different trends
+    - Short-Term Persistence (smooth demand changes)
+    - Medium-Term Trends (morning rush building up steam)
+    - Half-Day cycle (AM vs. PM patterns)
+    - Daily Periodicity (conditions at the same time yesterday)
+- Testing/Training datasets will be temporal in nature
+  - Train on an earlier half of the dataset, test on the later half
+- *Note for Hwk: attempt to use a poisson regression instead of the linear example since we're dealing with counts of trips*

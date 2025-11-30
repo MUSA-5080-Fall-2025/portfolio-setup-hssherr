@@ -47,6 +47,7 @@ website:
           - href: assignments/assignment4/Sywulak-Herr_Henry_assignment4.qmd
             text: "Assignment 4: Spatial Predictive Analysis"
           - href: assignments/assignment5/Sywulak-Herr_Henry_assignment5.qmd
+            text: "Assignment 5: Space-Time Prediction"
 format:
   html:
     theme: cosmo

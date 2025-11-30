@@ -28,6 +28,8 @@ website:
             href: weekly-notes/week-08-notes.qmd
           - text: "Week 10"
             href: weekly-notes/week-10-notes.qmd
+          - text: "Week 11"
+            href: weekly-notes/week-11-notes.qmd
       - text: Labs
         menu:
           - href: labs/lab0/lab0_template.qmd
@@ -44,6 +46,7 @@ website:
             text: "Midterm - Presentation"
           - href: assignments/assignment4/Sywulak-Herr_Henry_assignment4.qmd
             text: "Assignment 4: Spatial Predictive Analysis"
+          - href: assignments/assignment5/Sywulak-Herr_Henry_assignment5.qmd
 format:
   html:
     theme: cosmo

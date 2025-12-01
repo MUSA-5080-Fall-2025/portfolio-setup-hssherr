@@ -849,13 +849,13 @@ trips_panel <- indego %>%
   ungroup()
 
 # How many station-hour observations?
-nrow(trips_panel)
+cat("Original count of rows in Trips Panel:", nrow(trips_panel))
 
 # How many unique stations?
-length(unique(trips_panel$start_station))
+cat("Unique stations in the dataset:", length(unique(trips_panel$start_station)))
 
 # How many unique hours?
-length(unique(trips_panel$interval60))
+cat("Unique hours in the dataset:", length(unique(trips_panel$interval60)))
 ```
 
 ### Create Complete Panel Structure
@@ -1217,7 +1217,7 @@ variables in the model, however, since it controls for a specific
 phenomenon that has a strong theoretical backing (rush hour effects on
 bikeshare usage are not present on the weekends).
 
-Model 6 - Backtracking: Additional Variables
+### Model 6 - Backtracking: Additional Variables
 
 To discern the potential influence of additional variables, model 6 will
 be an enhancement of model 3, prior to the addition of station fixed
@@ -1264,7 +1264,7 @@ though both are significant. The holiday variables demonstrated some
 predictive value, though the coefficient for concert dates was not a
 significant predictor (p = 0.54).
 
-Model 7 - Poisson Regression
+### Model 7 - Poisson Regression
 
 ```{r model-7}
 model7 <- glm(

@@ -177,16 +177,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <a class="dropdown-item" href="../../weekly-notes/week-10-notes.html">
  <span class="dropdown-text">Week 10</span></a>
   </li>  
-    </ul>
-  </li>
-  <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-labs" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Labs</span>
-    </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-labs">    
         <li>
-    <a class="dropdown-item" href="../../labs/lab0/lab0_template.html">
- <span class="dropdown-text">Lab 0</span></a>
+    <a class="dropdown-item" href="../../weekly-notes/week-11-notes.html">
+ <span class="dropdown-text">Week 11</span></a>
   </li>  
     </ul>
   </li>
@@ -214,6 +207,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="../../assignments/assignment4/Sywulak-Herr_Henry_assignment4.html">
  <span class="dropdown-text">Assignment 4: Spatial Predictive Analysis</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../assignments/assignment5/Sywulak-Herr_Henry_assignment5.html">
+ <span class="dropdown-text">Assignment 5: Space-Time Prediction</span></a>
   </li>  
     </ul>
   </li>
@@ -269,6 +266,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#model-3---add-demographics" id="toc-model-3---add-demographics" class="nav-link" data-scroll-target="#model-3---add-demographics">Model 3 - Add Demographics</a></li>
   <li><a href="#model-4---add-station-fixed-effects" id="toc-model-4---add-station-fixed-effects" class="nav-link" data-scroll-target="#model-4---add-station-fixed-effects">Model 4 - Add Station Fixed Effects</a></li>
   <li><a href="#model-5---add-rush-hour-interaction" id="toc-model-5---add-rush-hour-interaction" class="nav-link" data-scroll-target="#model-5---add-rush-hour-interaction">Model 5 - Add Rush Hour Interaction</a></li>
+  <li><a href="#model-6---backtracking-additional-variables" id="toc-model-6---backtracking-additional-variables" class="nav-link" data-scroll-target="#model-6---backtracking-additional-variables">Model 6 - Backtracking: Additional Variables</a></li>
+  <li><a href="#model-7---poisson-regression" id="toc-model-7---poisson-regression" class="nav-link" data-scroll-target="#model-7---poisson-regression">Model 7 - Poisson Regression</a></li>
   </ul></li>
   <li><a href="#space-time-error-analysis" id="toc-space-time-error-analysis" class="nav-link" data-scroll-target="#space-time-error-analysis">Space-Time Error Analysis</a>
   <ul class="collapse">
@@ -1598,26 +1597,26 @@ Number of expected records: 8784 </code></pre>
 <span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
 <span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a><span class="co"># How many station-hour observations?</span></span>
-<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(trips_panel)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Original count of rows in Trips Panel:"</span>, <span class="fu">nrow</span>(trips_panel))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 777371</code></pre>
+<pre><code>Original count of rows in Trips Panel: 777371</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="co"># How many unique stations?</span></span>
-<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">unique</span>(trips_panel<span class="sc">$</span>start_station))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Unique stations in the dataset:"</span>, <span class="fu">length</span>(<span class="fu">unique</span>(trips_panel<span class="sc">$</span>start_station)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 282</code></pre>
+<pre><code>Unique stations in the dataset: 282</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># How many unique hours?</span></span>
-<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">unique</span>(trips_panel<span class="sc">$</span>interval60))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Unique hours in the dataset:"</span>, <span class="fu">length</span>(<span class="fu">unique</span>(trips_panel<span class="sc">$</span>interval60)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 10913</code></pre>
+<pre><code>Unique hours in the dataset: 10913</code></pre>
 </div>
 </div>
 </section>
@@ -2171,7 +2170,9 @@ F-statistic: 2.316e+04 on 37 and 1645018 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 <p>Due to the expanded temporal range of data, the test dataset could not include all months that are represented in the train dataset. Therefore, the month predictor present in the sample code had to be removed from consideration for this analysis.</p>
 <p>This model proves to not be much of an improvement (Adjusted R<sup>2</sup> = 0.367 in model 5, compared to 0.364 in model 4). It may be reasonable to leave this interaction term between the rush hour and weekend dummy variables in the model, however, since it controls for a specific phenomenon that has a strong theoretical backing (rush hour effects on bikeshare usage are not present on the weekends).</p>
-<p>Model 6 - Backtracking: Additional Variables</p>
+</section>
+<section id="model-6---backtracking-additional-variables" class="level3">
+<h3 class="anchored" data-anchor-id="model-6---backtracking-additional-variables">Model 6 - Backtracking: Additional Variables</h3>
 <p>To discern the potential influence of additional variables, model 6 will be an enhancement of model 3, prior to the addition of station fixed effects that make the model summary table difficult to parse.</p>
 <p>The additional variables (and some variable substitutions) are as follows:</p>
 <ul>
@@ -2260,7 +2261,9 @@ F-statistic: 2.003e+04 on 43 and 1645012 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 <p>Unfortunately, the results of adding additional variables to model 3 did not result in a strong increase in model performance, according to R2 values (model 6 R2 = 0.3437, model 3 R2 = 0.3425). The rain indicator variable, which was theorized to be an improvement on the continuous precipitation variable, had a significantly reduced coefficient value (model 6 “rain” estimate = -0.096, model 3 “prec” estimate = -0.57), though both are significant. The holiday variables demonstrated some predictive value, though the coefficient for concert dates was not a significant predictor (p = 0.54).</p>
-<p>Model 7 - Poisson Regression</p>
+</section>
+<section id="model-7---poisson-regression" class="level3">
+<h3 class="anchored" data-anchor-id="model-7---poisson-regression">Model 7 - Poisson Regression</h3>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>

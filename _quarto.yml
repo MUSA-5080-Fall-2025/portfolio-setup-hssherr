@@ -30,10 +30,6 @@ website:
             href: weekly-notes/week-10-notes.qmd
           - text: "Week 11"
             href: weekly-notes/week-11-notes.qmd
-      - text: Labs
-        menu:
-          - href: labs/lab0/lab0_template.qmd
-            text: "Lab 0"
       - text: Assignments
         menu:
           - href: assignments/assignment1/Sywulak-Herr_Henry_assignment1.qmd

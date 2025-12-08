@@ -1,0 +1,85 @@
+---
+title: "Predicting Eviction Risk in Philadelphia"
+subtitle: "Planning Policy Predictions, LLC"
+author: "Henry, Nina, Chloe, Ryan"
+format:
+  revealjs:
+    css: styles/style.css
+    slide-number: true
+editor: visual
+---
+
+## Who We Are
+
+We are a team of advanced planners, working in tandem to solve Philadelphia's most pressing issues. Our skills span across data analysis, policy analysis, design, and more. We are motivated by questions of justice and seek to blend technical solutions with policy know-how.
+
+## The Problem
+
+In the last year, 13,499 eviction claims have been filed against households in Philadelphia.
+
+-   Eviction fuels cycles of poverty, crime, and neighborhood decline, disproportionately impacting communities of color - especially majority-Black neighborhoods
+
+-   Families facing eviction experience ongoing housing instability, often relocating to lower-quality or disadvantaged areas
+
+##
+
+![](images/etractrace.png){fig-align="center" width="100%"}
+
+## How Eviction Works
+
+![](images/flowchart1.png){fig-align="center" width="100%"}
+
+## Our Research Question
+
+How can we better predict where evictions will occur, so that we can effectively mobilize resources to prevent them?
+
+-   Allow for the targeted allocation of limited resources
+-   Inform policies and programs, especially preventative policies
+-   Encourage construction of more affordable housing
+
+## Data Sources and Method
+::::: columns
+::: {.column width="50%"}
+![](images/data1.png){fig-align="center" width="100%"}
+:::
+::: {.column width="50%"}
+- Joined by Census tract GEOID and month, using 2020 tracts as the spatial base
+- Trained on 2022-2023 data to predict 2024 outcomes
+:::
+:::::
+
+## Our Model 
+We used a linear regression model for our prediction for transparency and ease of interpretation. Linear regression worked well with the size of the dataset, standardized nature of measurements, and predictors with known relationships in eviction literature. It is a stable model that avoids over-fitting. Fundamentally, the iterative and transparent nature of our method is optimal for policy-makers and mitigating equity concerns. 
+
+## Exploratory Spatial Analysis
+::: {.slide style="overflow-y:scroll; height: 100%;"}
+| ![](images/ebytract.png) | ![](images/mva.png) | 
+|---------------|---------------|---------------|
+| ![](images/crime.png) | ![](images/hca.png) | 
+:::
+
+
+## Models
+- Model 0: Baseline (MAE: 1.382)
+- Model 1: + Demographic factors (MAE: 1.840)
+- Model 2: + Crime (MAE 1.834)
+- Model 3: + Housing Counseling Agency distance (1.832)
+- Model 4: + Market Value Analysis Ranking (1.821)
+- Model 5: + Eviction lags (1.672)
+
+
+## Model Performance
+
+![](images/test.png){fig-align="center" width="100%"}
+
+## Spatial Errors
+
+![](images/errors.png){fig-align="center" width="100%"}
+
+## Spatial Cross-Validation
+
+![](images/error.png){fig-align="center" width="100%"}
+
+## Conclusion
+
+Eviction lags were the strongest factor out of our linear regression models, with an MAE of 1.672. We therefore recommend this model to the City to help it reach its policy goals.

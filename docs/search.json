@@ -753,7 +753,7 @@
     "href": "assignments/final/MUSA-5080-final-presentation.html#models",
     "title": "Predicting Eviction Risk in Philadelphia",
     "section": "Models",
-    "text": "Models\n\nModel 0: Baseline (MAE: 1.382)\nModel 1: + Demographic factors (MAE: 1.840)\nModel 2: + Crime (MAE 1.834)\nModel 3: + Housing Counseling Agency distance (1.832)\nModel 4: + Market Value Analysis Ranking (1.821)\nModel 5: + Eviction lags (1.672)"
+    "text": "Models\n\nModel 0: Baseline (MAE: 1.382)\nModel 1: + Demographic factors (1.840)\nModel 2: + Crime (1.834)\nModel 3: + Housing Counseling Agency distance (1.832)\nModel 4: + Market Value Analysis Ranking (1.821)\nModel 5: + Eviction lags (1.672)\nModel 6: Refined Predictors (1.666)"
   },
   {
     "objectID": "assignments/final/MUSA-5080-final-presentation.html#model-performance",

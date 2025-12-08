@@ -65,11 +65,12 @@ We used a linear regression model for our prediction for transparency and ease o
 ## Models
 
 -   Model 0: Baseline (MAE: 1.382)
--   Model 1: + Demographic factors (MAE: 1.840)
--   Model 2: + Crime (MAE 1.834)
+-   Model 1: + Demographic factors (1.840)
+-   Model 2: + Crime (1.834)
 -   Model 3: + Housing Counseling Agency distance (1.832)
 -   Model 4: + Market Value Analysis Ranking (1.821)
 -   Model 5: + Eviction lags (1.672)
+-   Model 6: Refined Predictors (1.666)
 
 ## Model Performance
 

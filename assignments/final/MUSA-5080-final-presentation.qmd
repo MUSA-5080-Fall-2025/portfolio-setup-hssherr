@@ -70,7 +70,7 @@ We used a linear regression model for our prediction for transparency and ease o
 -   Model 3: + Housing Counseling Agency distance (1.832)
 -   Model 4: + Market Value Analysis Ranking (1.821)
 -   Model 5: + Eviction lags (1.672)
--   Model 6: Refined Predictors (1.666)
+-   **Model 6: Refined Predictors (1.666)**
 
 ## Model Performance
 

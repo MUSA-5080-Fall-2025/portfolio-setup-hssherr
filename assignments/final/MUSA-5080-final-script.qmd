@@ -1,5 +1,5 @@
 ---
-title: "Space-Time Prediction of Bike Share Demand: Philadelphia Indego"
+title: "Final Challenge - Spatial Predictive Modeling of Evictions in Philadelphia"
 author: "Nina Carlson, Ryan Drake, Chloe Robinson, Henry Sywulak-Herr"
 date: "`r Sys.Date()`"
 output: 

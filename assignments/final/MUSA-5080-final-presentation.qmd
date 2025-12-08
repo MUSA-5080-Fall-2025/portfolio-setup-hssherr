@@ -85,8 +85,17 @@ We used a linear regression model for our prediction for transparency and ease o
 
 ## Future Considerations
 
-![](images/temp.png){fig-align="center" width="100%"} \## Future Considerations - Explore impact of policy changes, economic shifts, major events, or shifting social attitudes and wrap into future modeling - Include more specific/accurate temporal variables - Fold in rolling averages to smooth out the past to help predict the future
+![](images/temp.png){fig-align="center" width="100%"}
+
+# Future Considerations 
+- Explore impact of policy changes, economic shifts, major events, or shifting social attitudes and wrap into future modeling
+- Include more specific/accurate temporal variables
+- Fold in rolling averages to smooth out the past to help predict the future
 
 ## Conclusion
 
-We present Model 6 as our final model, which utilizes a reduced variable set to include average pre-pandemic eviction filings, percent non-white resident households, crime counts, and lagged eviction counts both by one month and by two months as our final model. This indicates that crime counts and the past history of evictions in a tract are strong indicators of whether evictions will occur in the future, which reinforces that evictions within a community perpetuate cycles of crime, poverty, and disinvestment that only contribute to additional risk of evictions in the future.
+We present Model 6 as our final model:
+
+- Reduced variable set to include average pre-pandemic eviction filings, percent non-white resident households, crime counts, and lagged eviction counts both by one month and by two months
+- This indicates that crime counts and the past history of evictions in a tract are strong indicators of whether evictions will occur in the future
+- Reinforces that evictions within a community perpetuate cycles of crime, poverty, and disinvestment that only contribute to additional risk of evictions in the future

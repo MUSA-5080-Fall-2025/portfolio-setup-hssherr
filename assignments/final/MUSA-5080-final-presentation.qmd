@@ -87,7 +87,7 @@ We used a linear regression model for our prediction for transparency and ease o
 
 ![](images/temp.png){fig-align="center" width="100%"}
 
-# Future Considerations 
+## Future Considerations 
 - Explore impact of policy changes, economic shifts, major events, or shifting social attitudes and wrap into future modeling
 - Include more specific/accurate temporal variables
 - Fold in rolling averages to smooth out the past to help predict the future

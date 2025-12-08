@@ -1041,5 +1041,12 @@
     "title": "Week 10 Notes - Logistic Regression",
     "section": "",
     "text": "Logistic Regression\n\nThe logit is equal to taking the log of the odds ratio\n\nOR &gt; 1 = greater odds of outcome\nOR &lt; 1 = lower odds of outcome\n\nOutput values are probabilities of an event occurring\n\nChoosing a cutoff is an imperfect art\nIf you classify a potential spam email with a probability of 0.72 as spam, but it actually was not, what does that say about the cutoff? Confusion Matrices\n\nSensitivity = TP / TP + FN\nSpecificity = TN / TN + FP\nPrecision = TP / TP + FP\nAccuracy = TP + TN / Total ROC Curve\n“Receiver Operating Characteristic”\nAs you go up the y-axis you capture more true positives, as you go across the x-axis you are capturing more false positives (units are fractions of total = proportion)\nIf you choose a true positive rate threshold (coords: 0.35, 0.80), you can say that if you achieve an 80% true positive rate you will also have a 35% false positive rate\nGoal is to maximize AUC (area under the curve) value Handling Large Amounts of Zeros\n“Cooking the books” is to just remove the zeros"
+  },
+  {
+    "objectID": "assignments/final/MUSA-5080-final-presentation.html#future-considerations-1",
+    "href": "assignments/final/MUSA-5080-final-presentation.html#future-considerations-1",
+    "title": "Predicting Eviction Risk in Philadelphia",
+    "section": "Future Considerations",
+    "text": "Future Considerations\n\nExplore impact of policy changes, economic shifts, major events, or shifting social attitudes and wrap into future modeling\nInclude more specific/accurate temporal variables\nFold in rolling averages to smooth out the past to help predict the future"
   }
 ]

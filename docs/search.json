@@ -777,11 +777,18 @@
     "text": "Spatial Cross-Validation"
   },
   {
+    "objectID": "assignments/final/MUSA-5080-final-presentation.html#future-considerations",
+    "href": "assignments/final/MUSA-5080-final-presentation.html#future-considerations",
+    "title": "Predicting Eviction Risk in Philadelphia",
+    "section": "Future Considerations",
+    "text": "Future Considerations\n ## Future Considerations - Explore impact of policy changes, economic shifts, major events, or shifting social attitudes and wrap into future modeling - Include more specific/accurate temporal variables - Fold in rolling averages to smooth out the past to help predict the future"
+  },
+  {
     "objectID": "assignments/final/MUSA-5080-final-presentation.html#conclusion",
     "href": "assignments/final/MUSA-5080-final-presentation.html#conclusion",
     "title": "Predicting Eviction Risk in Philadelphia",
     "section": "Conclusion",
-    "text": "Conclusion\nEviction lags were the strongest factor out of our linear regression models, with an MAE of 1.672. We therefore recommend this model to the City to help it reach its policy goals."
+    "text": "Conclusion\nWe present Model 6 as our final model, which utilizes a reduced variable set to include aveerage pre-pandemic eviction filings, percent non-white resident households, crime counts, and lagged eviction counts both by one month and by two months as our final model. This indicates that crime counts and the past history of evictions in a tract are strong indicators of whether evictions will occur in the future, which reinforces that evictions within a community perpetuate cycles of crime, poverty, and disinvestment that only contribute to additional risk of evictions in the future."
   },
   {
     "objectID": "assignments/midterm/Carlsen_Drake_Kakumanu_Raju_Robinson_Sywulak-Herr_Appendix.html",

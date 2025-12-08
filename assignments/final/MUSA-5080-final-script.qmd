@@ -810,9 +810,14 @@ data_model <- left_join(data_3, demo_vars,   by = c("GEOID", "year_lag_census")
 
 # Predictive Modelling
 
-Building complexity over multiple models
+Building complexity over multiple models.
 
-## Create lag variables
+## Create Lag Variables
+
+Before modelling, monthly lag variables at the census tract level for
+evictions were created. This is because evictions persist over time and
+past evictions in a tract can be high predictors of future filings. Both
+a one month and a two month lag were created for later use in models.
 
 ```{r lag-prep}
 data_model <- data_model %>%
@@ -830,6 +835,12 @@ data_model <- data_model %>%
 ```
 
 ## Split Train/Test
+
+To cross validate temporally, a train/test split was conducted. To
+predict future eviction filings the training set used 2022 and 2023 data
+while the test set used 2024 and 2025. In the future, this would be
+adjusted to set the data at 2025-01-01 for a 75/25 split on predicting
+2025. (Also because 2025 is missing December.)
 
 ```{r prep for modelling}
 
@@ -861,6 +872,13 @@ summary(test_data$month_date)
 
 ### Model 0 - Baseline
 
+This model serves as a simple baseline for evictions filings. This
+establishes a benchmark for modelling using only two predictors -
+average filings and average prepandemic filings. This gives a rough
+sense of 2025 predictions capturing structural differences between
+tracts. This will serve as the benchmark as value is added with other
+predictors.
+
 ```{r add variables}
 
 model_0 <- lm(
@@ -873,6 +891,12 @@ summary(model_0)
 ```
 
 ### Model 1 - Demographics
+
+The first model adds key demographic predictors from the ACS that might
+influence eviction risk. These variables include the percent nonwhite,
+household composition, and housing unit density that may reflect
+socioeconomic factors of eviction risk. ACS is updated annually and
+reflect neighborhood structure over time.
 
 ```{r demographics }
 
@@ -913,6 +937,14 @@ summary(model_1)
 
 ### Model 2 - Crime
 
+Model two adds in our crime count data at the tract level. First the
+count data was mutated to as.numeric for testing/training and modelling,
+then added to the model. Crime is often associated with housing
+instability, neighborhood distress, or more policing in an area which
+can all affect eviction filings. This was previously done at the monthly
+level to match the model data to provide a sense of the fluctuations of
+these neighborhood conditions.
+
 ```{r model prep crime}
 
 train_data <- train_data %>%
@@ -945,6 +977,13 @@ summary(model_2)
 ```
 
 ### Model 3 - HCA Distances
+
+Model 3 adds the Housing Counselling Agency distance variable to the
+model. This adds a proxy of a tenants access to legal and housing
+support services. The aim is to evaluate eviction risk is mitigated by
+access to counselling services. HCA services are spatially uneven so
+distances, which were adjusted to as.numeric, add a layer of whether
+disparities in support add to tract level eviction filings.
 
 ```{r HCA prep}
 train_data <- train_data %>%
@@ -983,7 +1022,15 @@ summary(model_3)
 
 ```
 
-### Model 4 - Market Category
+### Model 4 - Market Value Analysis (MVA)
+
+Model 4 incorporates Market Category classifications which categorizes
+market strengths, investment levels, and housing demands. This feature
+captures more long term trajectories of a neighborhood and those
+relationships to eviction filings beyond demographics or crime data. MVA
+is added as a categorical variable, testing structural housing market
+characteristics and its predictive power. Future analysis would
+incorporate affordable housing counts here too.
 
 ```{r mva prep}
 train_data <- train_data %>%
@@ -1019,6 +1066,17 @@ summary(model_4)
 
 ### Model 5 - Eviction Lags
 
+Model 5 incorporates eviction filings lags that were created before.
+These lag capture strong auto regressive patterns of eviction filings
+versus the other variables which capture slower change across tracts. A
+one month and a two month lag were used. Rolling averages from 3 and 6
+months were attempted to smooth out short term fluctuations like policy
+changes, holidays, or other noise (which we will see in model errors).
+These were ultimately cut however in the time frame as they produced
+some model errors. In the future, these work as strong predictors as
+well of future filings. This model also serves as the basis for testing
+multicollinarity or reductions in generliziability.
+
 ```{r temporal variables}
 
 model_5 <- lm(
@@ -1042,6 +1100,12 @@ summary(model_5)
 ## Error Analysis
 
 ### Calculate Predictions and MAE
+
+MAE for each model were calculated as the primary metric of predictive
+performance. This highlights the incremental effects of adding each
+variable. MAE provides a straightforward and interpretable measure of
+model accuracy by quantifying the average absolute deviation between
+predicted and observed eviction filings.
 
 ```{r calculate_mae_evictions}
 # Generate predictions
@@ -1086,6 +1150,12 @@ knitr::kable(
 
 ### Visualize Model Comparison
 
+To visualize the MAE outcomes, a plot was made to demonstrate the MAE of
+each model. This bar chart confirms the expected outcome that lags were
+strong predictors and evictions are temporal as a dominant factor. It
+also demonstrates the diminished marginal benefit of adding more
+sturctural variables.
+
 ```{r visualize model comparison}
 
 mae_results <- mae_results %>%
@@ -1106,6 +1176,16 @@ ggplot(mae_results, aes(x = Model, y = MAE)) +
 ```
 
 ### Spatial Errors
+
+Spatial errors were conducted to show where the model does well or
+poorly geographically. Tract level mean absolute errors from Model 5
+(the best model) were mapped. By aggregating residuals within each
+census tract and visualizing them alongside average eviction levels, the
+spatial error analysis highlights systematic patterns. This way we can
+see clusters in specific neighborhood typologies. We see that Model 5
+performs relatively consistently across Philadelphia. There are just a
+few pockets where identify these neighborhoods to add additional local
+context or other data sources may improve predictive accuracy.
 
 ```{r spatial errors}
 
@@ -1173,6 +1253,19 @@ gridExtra::grid.arrange(p1, p2, ncol = 2)
 
 ### Temporal Errors
 
+By comparing out-of-sample mean absolute error across models, temporal
+CV identifies whether added predictors truly improve predictive accuracy
+over historical averages. This is helpful in eviction modelling since
+short-term volatility and policy changes can make over fitting a
+concern. This chart further demonstrates the auto regressive nature of
+eviction filings. This is shown in the mid-2025 spike error surge of all
+models showing there is underlying factors like policy changes or
+economic stressors. This would be explored in future data alaysis and
+modelling. These models perform best under normal conditions but may
+perform less so during periods of shock or uncertainty. Still, Model 5
+recovered quickly to normal month-to-month lag patterns after the shock
+compared to the other structural factors.
+
 ```{r temporal errors all models}
 
 #month_date is date
@@ -1237,6 +1330,21 @@ ggplot(temporal_mae_all, aes(x = month_date, y = MAE, color = model)) +
 
 ### Demographic Errors
 
+These errors were conducted to evaluate the relationships between
+prediction error and key demographic and housing variables. This step
+helps to evaluate where the model under preforms in tracts with high
+percentages of non-white residents, greater housings stock, or elevated
+crime levels for instance. While the correlations are not strong, they
+do show that neighborhoods facing higher structural stress—such as
+concentrated poverty, racial segregation, and unstable housing markets
+show more volatile eviction dynamics that are more difficult to predict.
+It demonstrates the need for caution in predicting in areas with already
+higher structural inequities. This would also be further explore in
+future analysis and modelling. Crime and racial composition for instance
+may show predictive accuracy, it may also be larger systemic
+disadvantage over tenant behavior. Therefore, safegaurds would be
+included in future predictive modelling.
+
 ```{r tract_mae_demographics}
 # Compute absolute residuals for Model 5
 test_data <- test_data %>%
@@ -1261,7 +1369,7 @@ tract_errors_demo <- test_data %>%
   )
 ```
 
-```{r errors demographics}
+```{r errors-demographics, message=FALSE}
 
 p1 <- ggplot(tract_errors_demo, aes(x = pct_nonwhite, y = MAE_5)) +
   geom_point(alpha = 0.5, color = "#3182bd") +
@@ -1301,6 +1409,14 @@ grid.arrange(p1, p2, p3, ncol = 2)
 
 ## Model 6 - FINAL FIT
 
+After Model 5, predictors were removed that weren't significant or
+suggested multicollinarity to see if the model significantly improves.
+While the r-squared did not significantly improve, these features
+capture the key temporal and spatial dynamics of eviction risk while
+eliminating redundant or noisy covariates. In simplifying the model,
+Model 6 reduces variance and improves stability, enabling it to
+generalize better to new time periods and new geographic areas.
+
 ```{r model 6}
 model_6 <- lm(
   filings_2020 ~ 
@@ -1325,7 +1441,22 @@ mae_6
 
 ## Cross-Validation
 
-### Spatial CV Cross Validation
+### Spatial-Folds
+
+This was conducted to evaluate geographic generalization. A spatial
+cross-validation clustering census tracts using k-means on tract
+centroids was conducted. Spatial folds were held out as a test region
+while the model was trained on all remaining tracts. 5 was chosen
+because it creates larger regions to assess larger geographical
+structures. It is also the default for its stable estimates and balanced
+fold size. Spatial CV helps reveal prediction errors in neighborhoods
+not represented in the training set across Philadelphia. This helps to
+see if the model overfits in specific areas or if models capture broader
+structural city-wide relationships. This was conducted for both Model 5
+and Model 6 in order to compare. Overall, model 6 shows lower MAE
+indicating is is stronger spatially. This confirms Model 6 is the better
+of the models for generalizability and avoiding overfitting of the other
+variables and is more stable.
 
 ```{r spatial folds}
 
@@ -1343,7 +1474,7 @@ sf_data <- data_model %>%
   st_as_sf()   # ensure it's sf
 ```
 
-```{r}
+```{r warning=FALSE}
 # Get tract centroids and coordinates
 centroids <- sf::st_centroid(sf_data)
 coords    <- sf::st_coordinates(centroids)  # matrix with X, Y
@@ -1418,7 +1549,7 @@ results_model6 <- purrr::map_df(1:5, function(f) {
 ```{r}
 spatial_results <- bind_rows(results_model5, results_model6)
 
-spatial_results
+kable(spatial_results, col.names = c('Fold', 'Model', "MAE"), digits = 2)
 ```
 
 ```{r plot spatial cv}
@@ -1444,3 +1575,15 @@ ggplot(spatial_results, aes(x = factor(fold), y = MAE, fill = model)) +
     axis.text.x = element_text(size = 11)
   )
 ```
+
+## Conclusion
+
+We present Model 6 as our final model, which utilizes a reduced variable
+set to include aveerage pre-pandemic eviction filings, percent non-white
+resident households, crime counts, and lagged eviction counts both by
+one month and by two months as our final model. This indicates that
+crime counts and the past history of evictions in a tract are strong
+indicators of whether evictions will occur in the future, which
+reinforces that evictions within a community perpetuate cycles of crime,
+poverty, and disinvestment that only contribute to additional risk of
+evictions in the future.

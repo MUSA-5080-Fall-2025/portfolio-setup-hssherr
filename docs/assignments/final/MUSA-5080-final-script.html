@@ -257,7 +257,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </ul></li>
   <li><a href="#predictive-modelling" id="toc-predictive-modelling" class="nav-link" data-scroll-target="#predictive-modelling">Predictive Modelling</a>
   <ul class="collapse">
-  <li><a href="#create-lag-variables" id="toc-create-lag-variables" class="nav-link" data-scroll-target="#create-lag-variables">Create lag variables</a></li>
+  <li><a href="#create-lag-variables" id="toc-create-lag-variables" class="nav-link" data-scroll-target="#create-lag-variables">Create Lag Variables</a></li>
   <li><a href="#split-traintest" id="toc-split-traintest" class="nav-link" data-scroll-target="#split-traintest">Split Train/Test</a></li>
   <li><a href="#models" id="toc-models" class="nav-link" data-scroll-target="#models">Models</a>
   <ul class="collapse">
@@ -265,7 +265,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#model-1---demographics" id="toc-model-1---demographics" class="nav-link" data-scroll-target="#model-1---demographics">Model 1 - Demographics</a></li>
   <li><a href="#model-2---crime" id="toc-model-2---crime" class="nav-link" data-scroll-target="#model-2---crime">Model 2 - Crime</a></li>
   <li><a href="#model-3---hca-distances" id="toc-model-3---hca-distances" class="nav-link" data-scroll-target="#model-3---hca-distances">Model 3 - HCA Distances</a></li>
-  <li><a href="#model-4---market-category" id="toc-model-4---market-category" class="nav-link" data-scroll-target="#model-4---market-category">Model 4 - Market Category</a></li>
+  <li><a href="#model-4---market-value-analysis-mva" id="toc-model-4---market-value-analysis-mva" class="nav-link" data-scroll-target="#model-4---market-value-analysis-mva">Model 4 - Market Value Analysis (MVA)</a></li>
   <li><a href="#model-5---eviction-lags" id="toc-model-5---eviction-lags" class="nav-link" data-scroll-target="#model-5---eviction-lags">Model 5 - Eviction Lags</a></li>
   </ul></li>
   <li><a href="#error-analysis" id="toc-error-analysis" class="nav-link" data-scroll-target="#error-analysis">Error Analysis</a>
@@ -282,9 +282,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#model-6---final-fit" id="toc-model-6---final-fit" class="nav-link" data-scroll-target="#model-6---final-fit">Model 6 - FINAL FIT</a></li>
   <li><a href="#cross-validation" id="toc-cross-validation" class="nav-link" data-scroll-target="#cross-validation">Cross-Validation</a>
   <ul class="collapse">
-  <li><a href="#spatial-cv-cross-validation" id="toc-spatial-cv-cross-validation" class="nav-link" data-scroll-target="#spatial-cv-cross-validation">Spatial CV Cross Validation</a></li>
+  <li><a href="#spatial-folds" id="toc-spatial-folds" class="nav-link" data-scroll-target="#spatial-folds">Spatial-Folds</a></li>
   <li><a href="#model-6---spatial-cv" id="toc-model-6---spatial-cv" class="nav-link" data-scroll-target="#model-6---spatial-cv">Model 6 - Spatial CV</a></li>
   </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -1363,9 +1364,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="predictive-modelling" class="level1">
 <h1>Predictive Modelling</h1>
-<p>Building complexity over multiple models</p>
+<p>Building complexity over multiple models.</p>
 <section id="create-lag-variables" class="level2">
-<h2 class="anchored" data-anchor-id="create-lag-variables">Create lag variables</h2>
+<h2 class="anchored" data-anchor-id="create-lag-variables">Create Lag Variables</h2>
+<p>Before modelling, monthly lag variables at the census tract level for evictions were created. This is because evictions persist over time and past evictions in a tract can be high predictors of future filings. Both a one month and a two month lag were created for later use in models.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1385,6 +1387,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="split-traintest" class="level2">
 <h2 class="anchored" data-anchor-id="split-traintest">Split Train/Test</h2>
+<p>To cross validate temporally, a train/test split was conducted. To predict future eviction filings the training set used 2022 and 2023 data while the test set used 2024 and 2025. In the future, this would be adjusted to set the data at 2025-01-01 for a 75/25 split on predicting 2025. (Also because 2025 is missing December.)</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1437,6 +1440,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="models">Models</h2>
 <section id="model-0---baseline" class="level3">
 <h3 class="anchored" data-anchor-id="model-0---baseline">Model 0 - Baseline</h3>
+<p>This model serves as a simple baseline for evictions filings. This establishes a benchmark for modelling using only two predictors - average filings and average prepandemic filings. This gives a rough sense of 2025 predictions capturing structural differences between tracts. This will serve as the benchmark as value is added with other predictors.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1473,6 +1477,7 @@ F-statistic:  4476 on 2 and 9789 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="model-1---demographics" class="level3">
 <h3 class="anchored" data-anchor-id="model-1---demographics">Model 1 - Demographics</h3>
+<p>The first model adds key demographic predictors from the ACS that might influence eviction risk. These variables include the percent nonwhite, household composition, and housing unit density that may reflect socioeconomic factors of eviction risk. ACS is updated annually and reflect neighborhood structure over time.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1542,6 +1547,7 @@ F-statistic: 624.3 on 7 and 9304 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="model-2---crime" class="level3">
 <h3 class="anchored" data-anchor-id="model-2---crime">Model 2 - Crime</h3>
+<p>Model two adds in our crime count data at the tract level. First the count data was mutated to as.numeric for testing/training and modelling, then added to the model. Crime is often associated with housing instability, neighborhood distress, or more policing in an area which can all affect eviction filings. This was previously done at the monthly level to match the model data to provide a sense of the fluctuations of these neighborhood conditions.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1604,6 +1610,7 @@ F-statistic: 547.7 on 8 and 9303 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="model-3---hca-distances" class="level3">
 <h3 class="anchored" data-anchor-id="model-3---hca-distances">Model 3 - HCA Distances</h3>
+<p>Model 3 adds the Housing Counselling Agency distance variable to the model. This adds a proxy of a tenants access to legal and housing support services. The aim is to evaluate eviction risk is mitigated by access to counselling services. HCA services are spatially uneven so distances, which were adjusted to as.numeric, add a layer of whether disparities in support add to tract level eviction filings.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1674,8 +1681,9 @@ F-statistic: 444.4 on 10 and 9301 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </section>
-<section id="model-4---market-category" class="level3">
-<h3 class="anchored" data-anchor-id="model-4---market-category">Model 4 - Market Category</h3>
+<section id="model-4---market-value-analysis-mva" class="level3">
+<h3 class="anchored" data-anchor-id="model-4---market-value-analysis-mva">Model 4 - Market Value Analysis (MVA)</h3>
+<p>Model 4 incorporates Market Category classifications which categorizes market strengths, investment levels, and housing demands. This feature captures more long term trajectories of a neighborhood and those relationships to eviction filings beyond demographics or crime data. MVA is added as a categorical variable, testing structural housing market characteristics and its predictive power. Future analysis would incorporate affordable housing counts here too.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1754,6 +1762,7 @@ F-statistic: 243.2 on 18 and 9125 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="model-5---eviction-lags" class="level3">
 <h3 class="anchored" data-anchor-id="model-5---eviction-lags">Model 5 - Eviction Lags</h3>
+<p>Model 5 incorporates eviction filings lags that were created before. These lag capture strong auto regressive patterns of eviction filings versus the other variables which capture slower change across tracts. A one month and a two month lag were used. Rolling averages from 3 and 6 months were attempted to smooth out short term fluctuations like policy changes, holidays, or other noise (which we will see in model errors). These were ultimately cut however in the time frame as they produced some model errors. In the future, these work as strong predictors as well of future filings. This model also serves as the basis for testing multicollinarity or reductions in generliziability.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1822,6 +1831,7 @@ F-statistic: 278.8 on 20 and 8361 DF,  p-value: &lt; 2.2e-16</code></pre>
 <h2 class="anchored" data-anchor-id="error-analysis">Error Analysis</h2>
 <section id="calculate-predictions-and-mae" class="level3">
 <h3 class="anchored" data-anchor-id="calculate-predictions-and-mae">Calculate Predictions and MAE</h3>
+<p>MAE for each model were calculated as the primary metric of predictive performance. This highlights the incremental effects of adding each variable. MAE provides a straightforward and interpretable measure of model accuracy by quantifying the average absolute deviation between predicted and observed eviction filings.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1905,6 +1915,7 @@ F-statistic: 278.8 on 20 and 8361 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="visualize-model-comparison" class="level3">
 <h3 class="anchored" data-anchor-id="visualize-model-comparison">Visualize Model Comparison</h3>
+<p>To visualize the MAE outcomes, a plot was made to demonstrate the MAE of each model. This bar chart confirms the expected outcome that lags were strong predictors and evictions are temporal as a dominant factor. It also demonstrates the diminished marginal benefit of adding more sturctural variables.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1935,6 +1946,7 @@ F-statistic: 278.8 on 20 and 8361 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="spatial-errors" class="level3">
 <h3 class="anchored" data-anchor-id="spatial-errors">Spatial Errors</h3>
+<p>Spatial errors were conducted to show where the model does well or poorly geographically. Tract level mean absolute errors from Model 5 (the best model) were mapped. By aggregating residuals within each census tract and visualizing them alongside average eviction levels, the spatial error analysis highlights systematic patterns. This way we can see clusters in specific neighborhood typologies. We see that Model 5 performs relatively consistently across Philadelphia. There are just a few pockets where identify these neighborhoods to add additional local context or other data sources may improve predictive accuracy.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -2009,6 +2021,7 @@ F-statistic: 278.8 on 20 and 8361 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="temporal-errors" class="level3">
 <h3 class="anchored" data-anchor-id="temporal-errors">Temporal Errors</h3>
+<p>By comparing out-of-sample mean absolute error across models, temporal CV identifies whether added predictors truly improve predictive accuracy over historical averages. This is helpful in eviction modelling since short-term volatility and policy changes can make over fitting a concern. This chart further demonstrates the auto regressive nature of eviction filings. This is shown in the mid-2025 spike error surge of all models showing there is underlying factors like policy changes or economic stressors. This would be explored in future data alaysis and modelling. These models perform best under normal conditions but may perform less so during periods of shock or uncertainty. Still, Model 5 recovered quickly to normal month-to-month lag patterns after the shock compared to the other structural factors.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -2081,6 +2094,7 @@ F-statistic: 278.8 on 20 and 8361 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="demographic-errors" class="level3">
 <h3 class="anchored" data-anchor-id="demographic-errors">Demographic Errors</h3>
+<p>These errors were conducted to evaluate the relationships between prediction error and key demographic and housing variables. This step helps to evaluate where the model under preforms in tracts with high percentages of non-white residents, greater housings stock, or elevated crime levels for instance. While the correlations are not strong, they do show that neighborhoods facing higher structural stress—such as concentrated poverty, racial segregation, and unstable housing markets show more volatile eviction dynamics that are more difficult to predict. It demonstrates the need for caution in predicting in areas with already higher structural inequities. This would also be further explore in future analysis and modelling. Crime and racial composition for instance may show predictive accuracy, it may also be larger systemic disadvantage over tenant behavior. Therefore, safegaurds would be included in future predictive modelling.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -2143,7 +2157,12 @@ F-statistic: 278.8 on 20 and 8361 DF,  p-value: &lt; 2.2e-16</code></pre>
 <span id="cb73-31"><a href="#cb73-31" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(p1, p2, p3, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
+<pre><code>Warning: Removed 27 rows containing non-finite outside the scale range
+(`stat_smooth()`).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Removed 27 rows containing missing values or values outside the scale range
+(`geom_point()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 27 rows containing non-finite outside the scale range
@@ -2154,27 +2173,17 @@ F-statistic: 278.8 on 20 and 8361 DF,  p-value: &lt; 2.2e-16</code></pre>
 (`geom_point()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
 <pre><code>Warning: Removed 27 rows containing non-finite outside the scale range
-(`stat_smooth()`).
-Removed 27 rows containing missing values or values outside the scale range
-(`geom_point()`).</code></pre>
+(`stat_smooth()`).</code></pre>
 </div>
 <div class="cell-output cell-output-stderr">
-<pre><code>`geom_smooth()` using formula = 'y ~ x'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: Removed 27 rows containing non-finite outside the scale range
-(`stat_smooth()`).
-Removed 27 rows containing missing values or values outside the scale range
+<pre><code>Warning: Removed 27 rows containing missing values or values outside the scale range
 (`geom_point()`).</code></pre>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="MUSA-5080-final-script_files/figure-html/errors demographics-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="MUSA-5080-final-script_files/figure-html/errors-demographics-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -2186,19 +2195,20 @@ Removed 27 rows containing missing values or values outside the scale range
 <h1>Conclusion - Final Model</h1>
 <section id="model-6---final-fit" class="level2">
 <h2 class="anchored" data-anchor-id="model-6---final-fit">Model 6 - FINAL FIT</h2>
+<p>After Model 5, predictors were removed that weren’t significant or suggested multicollinarity to see if the model significantly improves. While the r-squared did not significantly improve, these features capture the key temporal and spatial dynamics of eviction risk while eliminating redundant or noisy covariates. In simplifying the model, Model 6 reduces variance and improves stability, enabling it to generalize better to new time periods and new geographic areas.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>model_6 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
-<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>  filings_2020 <span class="sc">~</span> </span>
-<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>    filings_avg_prepandemic_baseline <span class="sc">+</span></span>
-<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>    pct_nonwhite <span class="sc">+</span> </span>
-<span id="cb81-5"><a href="#cb81-5" aria-hidden="true" tabindex="-1"></a>    crime_cnt <span class="sc">+</span></span>
-<span id="cb81-6"><a href="#cb81-6" aria-hidden="true" tabindex="-1"></a>    lag_1 <span class="sc">+</span> lag_2,</span>
-<span id="cb81-7"><a href="#cb81-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_data</span>
-<span id="cb81-8"><a href="#cb81-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb81-9"><a href="#cb81-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb81-10"><a href="#cb81-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_6)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>model_6 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  filings_2020 <span class="sc">~</span> </span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>    filings_avg_prepandemic_baseline <span class="sc">+</span></span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>    pct_nonwhite <span class="sc">+</span> </span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>    crime_cnt <span class="sc">+</span></span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a>    lag_1 <span class="sc">+</span> lag_2,</span>
+<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> train_data</span>
+<span id="cb80-8"><a href="#cb80-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb80-9"><a href="#cb80-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb80-10"><a href="#cb80-10" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model_6)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -2230,10 +2240,10 @@ F-statistic:  1139 on 5 and 8596 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>test_data<span class="sc">$</span>pred_6 <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_6, <span class="at">newdata =</span> test_data)</span>
-<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>mae_6 <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(test_data<span class="sc">$</span>filings_2020 <span class="sc">-</span> test_data<span class="sc">$</span>pred_6), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a>mae_6</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>test_data<span class="sc">$</span>pred_6 <span class="ot">&lt;-</span> <span class="fu">predict</span>(model_6, <span class="at">newdata =</span> test_data)</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>mae_6 <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(test_data<span class="sc">$</span>filings_2020 <span class="sc">-</span> test_data<span class="sc">$</span>pred_6), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>mae_6</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1.665506</code></pre>
@@ -2242,47 +2252,42 @@ F-statistic:  1139 on 5 and 8596 DF,  p-value: &lt; 2.2e-16</code></pre>
 </section>
 <section id="cross-validation" class="level2">
 <h2 class="anchored" data-anchor-id="cross-validation">Cross-Validation</h2>
-<section id="spatial-cv-cross-validation" class="level3">
-<h3 class="anchored" data-anchor-id="spatial-cv-cross-validation">Spatial CV Cross Validation</h3>
+<section id="spatial-folds" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-folds">Spatial-Folds</h3>
+<p>This was conducted to evaluate geographic generalization. A spatial cross-validation clustering census tracts using k-means on tract centroids was conducted. Spatial folds were held out as a test region while the model was trained on all remaining tracts. 5 was chosen because it creates larger regions to assess larger geographical structures. It is also the default for its stable estimates and balanced fold size. Spatial CV helps reveal prediction errors in neighborhoods not represented in the training set across Philadelphia. This helps to see if the model overfits in specific areas or if models capture broader structural city-wide relationships. This was conducted for both Model 5 and Model 6 in order to compare. Overall, model 6 shows lower MAE indicating is is stronger spatially. This confirms Model 6 is the better of the models for generalizability and avoiding overfitting of the other variables and is more stable.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>sf_data <span class="ot">&lt;-</span> data_model <span class="sc">%&gt;%</span></span>
-<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_nonwhite =</span> <span class="dv">1</span> <span class="sc">-</span> (pop_whiteE <span class="sc">/</span> pop_totE),</span>
-<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">hh_fam_share =</span> hh_famE <span class="sc">/</span> hh_totE,</span>
-<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">units_per_hh =</span> units_totE <span class="sc">/</span> hh_totE,</span>
-<span id="cb85-6"><a href="#cb85-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">crime_cnt    =</span> <span class="fu">as.numeric</span>(count),</span>
-<span id="cb85-7"><a href="#cb85-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">dist_1hca    =</span> <span class="fu">as.numeric</span>(dist_1hca),</span>
-<span id="cb85-8"><a href="#cb85-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">dist_3hca    =</span> <span class="fu">as.numeric</span>(dist_3hca),</span>
-<span id="cb85-9"><a href="#cb85-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank         =</span> <span class="fu">factor</span>(rank)</span>
-<span id="cb85-10"><a href="#cb85-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb85-11"><a href="#cb85-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(filings_2020)) <span class="sc">%&gt;%</span></span>
-<span id="cb85-12"><a href="#cb85-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>()   <span class="co"># ensure it's sf</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>sf_data <span class="ot">&lt;-</span> data_model <span class="sc">%&gt;%</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">pct_nonwhite =</span> <span class="dv">1</span> <span class="sc">-</span> (pop_whiteE <span class="sc">/</span> pop_totE),</span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">hh_fam_share =</span> hh_famE <span class="sc">/</span> hh_totE,</span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">units_per_hh =</span> units_totE <span class="sc">/</span> hh_totE,</span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">crime_cnt    =</span> <span class="fu">as.numeric</span>(count),</span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">dist_1hca    =</span> <span class="fu">as.numeric</span>(dist_1hca),</span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">dist_3hca    =</span> <span class="fu">as.numeric</span>(dist_3hca),</span>
+<span id="cb84-9"><a href="#cb84-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">rank         =</span> <span class="fu">factor</span>(rank)</span>
+<span id="cb84-10"><a href="#cb84-10" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb84-11"><a href="#cb84-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(filings_2020)) <span class="sc">%&gt;%</span></span>
+<span id="cb84-12"><a href="#cb84-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">st_as_sf</span>()   <span class="co"># ensure it's sf</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get tract centroids and coordinates</span></span>
-<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>centroids <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_centroid</span>(sf_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-</details>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: st_centroid assumes attributes are constant over geometries</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>coords    <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_coordinates</span>(centroids)  <span class="co"># matrix with X, Y</span></span>
-<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">5746</span>)</span>
-<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a>k_folds <span class="ot">&lt;-</span> <span class="dv">5</span></span>
-<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a>km <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(coords, <span class="at">centers =</span> k_folds, <span class="at">nstart =</span> <span class="dv">25</span>)</span>
-<span id="cb88-7"><a href="#cb88-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-8"><a href="#cb88-8" aria-hidden="true" tabindex="-1"></a><span class="co"># fold</span></span>
-<span id="cb88-9"><a href="#cb88-9" aria-hidden="true" tabindex="-1"></a>sf_data <span class="ot">&lt;-</span> sf_data <span class="sc">%&gt;%</span></span>
-<span id="cb88-10"><a href="#cb88-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fold_id =</span> km<span class="sc">$</span>cluster)</span>
-<span id="cb88-11"><a href="#cb88-11" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(sf_data<span class="sc">$</span>fold_id)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get tract centroids and coordinates</span></span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>centroids <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_centroid</span>(sf_data)</span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>coords    <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_coordinates</span>(centroids)  <span class="co"># matrix with X, Y</span></span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">5746</span>)</span>
+<span id="cb85-6"><a href="#cb85-6" aria-hidden="true" tabindex="-1"></a>k_folds <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb85-7"><a href="#cb85-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-8"><a href="#cb85-8" aria-hidden="true" tabindex="-1"></a>km <span class="ot">&lt;-</span> <span class="fu">kmeans</span>(coords, <span class="at">centers =</span> k_folds, <span class="at">nstart =</span> <span class="dv">25</span>)</span>
+<span id="cb85-9"><a href="#cb85-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb85-10"><a href="#cb85-10" aria-hidden="true" tabindex="-1"></a><span class="co"># fold</span></span>
+<span id="cb85-11"><a href="#cb85-11" aria-hidden="true" tabindex="-1"></a>sf_data <span class="ot">&lt;-</span> sf_data <span class="sc">%&gt;%</span></span>
+<span id="cb85-12"><a href="#cb85-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">fold_id =</span> km<span class="sc">$</span>cluster)</span>
+<span id="cb85-13"><a href="#cb85-13" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(sf_data<span class="sc">$</span>fold_id)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -2293,31 +2298,31 @@ F-statistic:  1139 on 5 and 8596 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 5: full + lags</span></span>
-<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>form_5 <span class="ot">&lt;-</span> filings_2020 <span class="sc">~</span> </span>
-<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>  filings_avg_prepandemic_baseline <span class="sc">+</span></span>
-<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>  pop_totE <span class="sc">+</span> pct_nonwhite <span class="sc">+</span> hh_totE <span class="sc">+</span> hh_fam_share <span class="sc">+</span></span>
-<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>  units_totE <span class="sc">+</span> units_per_hh <span class="sc">+</span></span>
-<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>  crime_cnt <span class="sc">+</span></span>
-<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a>  dist_1hca <span class="sc">+</span> dist_3hca <span class="sc">+</span></span>
-<span id="cb90-8"><a href="#cb90-8" aria-hidden="true" tabindex="-1"></a>  rank <span class="sc">+</span></span>
-<span id="cb90-9"><a href="#cb90-9" aria-hidden="true" tabindex="-1"></a>  lag_1 <span class="sc">+</span> lag_2</span>
-<span id="cb90-10"><a href="#cb90-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb90-11"><a href="#cb90-11" aria-hidden="true" tabindex="-1"></a>results_model5 <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="cf">function</span>(f) {</span>
-<span id="cb90-12"><a href="#cb90-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb90-13"><a href="#cb90-13" aria-hidden="true" tabindex="-1"></a>  train_set <span class="ot">&lt;-</span> sf_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(fold_id <span class="sc">!=</span> f)</span>
-<span id="cb90-14"><a href="#cb90-14" aria-hidden="true" tabindex="-1"></a>  test_set  <span class="ot">&lt;-</span> sf_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(fold_id <span class="sc">==</span> f)</span>
-<span id="cb90-15"><a href="#cb90-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb90-16"><a href="#cb90-16" aria-hidden="true" tabindex="-1"></a>  mod5 <span class="ot">&lt;-</span> <span class="fu">lm</span>(form_5, <span class="at">data =</span> train_set)</span>
-<span id="cb90-17"><a href="#cb90-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb90-18"><a href="#cb90-18" aria-hidden="true" tabindex="-1"></a>  test_set<span class="sc">$</span>pred5 <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod5, <span class="at">newdata =</span> test_set)</span>
-<span id="cb90-19"><a href="#cb90-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb90-20"><a href="#cb90-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb90-21"><a href="#cb90-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">fold =</span> f,</span>
-<span id="cb90-22"><a href="#cb90-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="st">"Model 5"</span>,</span>
-<span id="cb90-23"><a href="#cb90-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAE =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(test_set<span class="sc">$</span>filings_2020 <span class="sc">-</span> test_set<span class="sc">$</span>pred5), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb90-24"><a href="#cb90-24" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb90-25"><a href="#cb90-25" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 5: full + lags</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a>form_5 <span class="ot">&lt;-</span> filings_2020 <span class="sc">~</span> </span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>  filings_avg_prepandemic_baseline <span class="sc">+</span></span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>  pop_totE <span class="sc">+</span> pct_nonwhite <span class="sc">+</span> hh_totE <span class="sc">+</span> hh_fam_share <span class="sc">+</span></span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>  units_totE <span class="sc">+</span> units_per_hh <span class="sc">+</span></span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a>  crime_cnt <span class="sc">+</span></span>
+<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>  dist_1hca <span class="sc">+</span> dist_3hca <span class="sc">+</span></span>
+<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a>  rank <span class="sc">+</span></span>
+<span id="cb87-9"><a href="#cb87-9" aria-hidden="true" tabindex="-1"></a>  lag_1 <span class="sc">+</span> lag_2</span>
+<span id="cb87-10"><a href="#cb87-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-11"><a href="#cb87-11" aria-hidden="true" tabindex="-1"></a>results_model5 <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="cf">function</span>(f) {</span>
+<span id="cb87-12"><a href="#cb87-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-13"><a href="#cb87-13" aria-hidden="true" tabindex="-1"></a>  train_set <span class="ot">&lt;-</span> sf_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(fold_id <span class="sc">!=</span> f)</span>
+<span id="cb87-14"><a href="#cb87-14" aria-hidden="true" tabindex="-1"></a>  test_set  <span class="ot">&lt;-</span> sf_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(fold_id <span class="sc">==</span> f)</span>
+<span id="cb87-15"><a href="#cb87-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-16"><a href="#cb87-16" aria-hidden="true" tabindex="-1"></a>  mod5 <span class="ot">&lt;-</span> <span class="fu">lm</span>(form_5, <span class="at">data =</span> train_set)</span>
+<span id="cb87-17"><a href="#cb87-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-18"><a href="#cb87-18" aria-hidden="true" tabindex="-1"></a>  test_set<span class="sc">$</span>pred5 <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod5, <span class="at">newdata =</span> test_set)</span>
+<span id="cb87-19"><a href="#cb87-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-20"><a href="#cb87-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb87-21"><a href="#cb87-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">fold =</span> f,</span>
+<span id="cb87-22"><a href="#cb87-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="st">"Model 5"</span>,</span>
+<span id="cb87-23"><a href="#cb87-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAE =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(test_set<span class="sc">$</span>filings_2020 <span class="sc">-</span> test_set<span class="sc">$</span>pred5), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb87-24"><a href="#cb87-24" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb87-25"><a href="#cb87-25" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 </section>
@@ -2326,75 +2331,123 @@ F-statistic:  1139 on 5 and 8596 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>form_6 <span class="ot">&lt;-</span> filings_2020 <span class="sc">~</span> </span>
-<span id="cb91-2"><a href="#cb91-2" aria-hidden="true" tabindex="-1"></a>  filings_avg_prepandemic_baseline <span class="sc">+</span></span>
-<span id="cb91-3"><a href="#cb91-3" aria-hidden="true" tabindex="-1"></a>  pct_nonwhite <span class="sc">+</span> </span>
-<span id="cb91-4"><a href="#cb91-4" aria-hidden="true" tabindex="-1"></a>  crime_cnt <span class="sc">+</span></span>
-<span id="cb91-5"><a href="#cb91-5" aria-hidden="true" tabindex="-1"></a>  lag_1 <span class="sc">+</span> lag_2</span>
-<span id="cb91-6"><a href="#cb91-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb91-7"><a href="#cb91-7" aria-hidden="true" tabindex="-1"></a>results_model6 <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="cf">function</span>(f) {</span>
-<span id="cb91-8"><a href="#cb91-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb91-9"><a href="#cb91-9" aria-hidden="true" tabindex="-1"></a>  train_set <span class="ot">&lt;-</span> sf_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(fold_id <span class="sc">!=</span> f)</span>
-<span id="cb91-10"><a href="#cb91-10" aria-hidden="true" tabindex="-1"></a>  test_set  <span class="ot">&lt;-</span> sf_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(fold_id <span class="sc">==</span> f)</span>
-<span id="cb91-11"><a href="#cb91-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb91-12"><a href="#cb91-12" aria-hidden="true" tabindex="-1"></a>  mod6 <span class="ot">&lt;-</span> <span class="fu">lm</span>(form_6, <span class="at">data =</span> train_set)</span>
-<span id="cb91-13"><a href="#cb91-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb91-14"><a href="#cb91-14" aria-hidden="true" tabindex="-1"></a>  test_set<span class="sc">$</span>pred6 <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod6, <span class="at">newdata =</span> test_set)</span>
-<span id="cb91-15"><a href="#cb91-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb91-16"><a href="#cb91-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
-<span id="cb91-17"><a href="#cb91-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">fold =</span> f,</span>
-<span id="cb91-18"><a href="#cb91-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="st">"Model 6"</span>,</span>
-<span id="cb91-19"><a href="#cb91-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAE =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(test_set<span class="sc">$</span>filings_2020 <span class="sc">-</span> test_set<span class="sc">$</span>pred6), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb91-20"><a href="#cb91-20" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb91-21"><a href="#cb91-21" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>form_6 <span class="ot">&lt;-</span> filings_2020 <span class="sc">~</span> </span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a>  filings_avg_prepandemic_baseline <span class="sc">+</span></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>  pct_nonwhite <span class="sc">+</span> </span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a>  crime_cnt <span class="sc">+</span></span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a>  lag_1 <span class="sc">+</span> lag_2</span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-7"><a href="#cb88-7" aria-hidden="true" tabindex="-1"></a>results_model6 <span class="ot">&lt;-</span> purrr<span class="sc">::</span><span class="fu">map_df</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="cf">function</span>(f) {</span>
+<span id="cb88-8"><a href="#cb88-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-9"><a href="#cb88-9" aria-hidden="true" tabindex="-1"></a>  train_set <span class="ot">&lt;-</span> sf_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(fold_id <span class="sc">!=</span> f)</span>
+<span id="cb88-10"><a href="#cb88-10" aria-hidden="true" tabindex="-1"></a>  test_set  <span class="ot">&lt;-</span> sf_data <span class="sc">%&gt;%</span> <span class="fu">filter</span>(fold_id <span class="sc">==</span> f)</span>
+<span id="cb88-11"><a href="#cb88-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-12"><a href="#cb88-12" aria-hidden="true" tabindex="-1"></a>  mod6 <span class="ot">&lt;-</span> <span class="fu">lm</span>(form_6, <span class="at">data =</span> train_set)</span>
+<span id="cb88-13"><a href="#cb88-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-14"><a href="#cb88-14" aria-hidden="true" tabindex="-1"></a>  test_set<span class="sc">$</span>pred6 <span class="ot">&lt;-</span> <span class="fu">predict</span>(mod6, <span class="at">newdata =</span> test_set)</span>
+<span id="cb88-15"><a href="#cb88-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-16"><a href="#cb88-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tibble</span>(</span>
+<span id="cb88-17"><a href="#cb88-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">fold =</span> f,</span>
+<span id="cb88-18"><a href="#cb88-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">model =</span> <span class="st">"Model 6"</span>,</span>
+<span id="cb88-19"><a href="#cb88-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">MAE =</span> <span class="fu">mean</span>(<span class="fu">abs</span>(test_set<span class="sc">$</span>filings_2020 <span class="sc">-</span> test_set<span class="sc">$</span>pred6), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb88-20"><a href="#cb88-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb88-21"><a href="#cb88-21" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>spatial_results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(results_model5, results_model6)</span>
-<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>spatial_results</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>spatial_results <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(results_model5, results_model6)</span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(spatial_results, <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">'Fold'</span>, <span class="st">'Model'</span>, <span class="st">"MAE"</span>), <span class="at">digits =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 10 × 3
-    fold model     MAE
-   &lt;int&gt; &lt;chr&gt;   &lt;dbl&gt;
- 1     1 Model 5  1.70
- 2     2 Model 5  1.84
- 3     3 Model 5  2.11
- 4     4 Model 5  1.82
- 5     5 Model 5  1.53
- 6     1 Model 6  1.72
- 7     2 Model 6  1.87
- 8     3 Model 6  2.04
- 9     4 Model 6  1.55
-10     5 Model 6  1.40</code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Fold</th>
+<th style="text-align: left;">Model</th>
+<th style="text-align: right;">MAE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">Model 5</td>
+<td style="text-align: right;">1.70</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">Model 5</td>
+<td style="text-align: right;">1.84</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">Model 5</td>
+<td style="text-align: right;">2.11</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Model 5</td>
+<td style="text-align: right;">1.82</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Model 5</td>
+<td style="text-align: right;">1.53</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1</td>
+<td style="text-align: left;">Model 6</td>
+<td style="text-align: right;">1.72</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">Model 6</td>
+<td style="text-align: right;">1.87</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">3</td>
+<td style="text-align: left;">Model 6</td>
+<td style="text-align: right;">2.04</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">4</td>
+<td style="text-align: left;">Model 6</td>
+<td style="text-align: right;">1.55</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">5</td>
+<td style="text-align: left;">Model 6</td>
+<td style="text-align: right;">1.40</td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(spatial_results, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(fold), <span class="at">y =</span> MAE, <span class="at">fill =</span> model)) <span class="sc">+</span></span>
-<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
-<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(</span>
-<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
-<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Model 5"</span> <span class="ot">=</span> <span class="st">"#3182bd"</span>,</span>
-<span id="cb94-6"><a href="#cb94-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Model 6"</span> <span class="ot">=</span> <span class="st">"#31a354"</span></span>
-<span id="cb94-7"><a href="#cb94-7" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb94-8"><a href="#cb94-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb94-9"><a href="#cb94-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb94-10"><a href="#cb94-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Spatial Cross-Validation MAE Across Folds"</span>,</span>
-<span id="cb94-11"><a href="#cb94-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Comparing Model 5 (full + lags) vs. Model 6 (reduced + lags)"</span>,</span>
-<span id="cb94-12"><a href="#cb94-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Spatial Fold (k-means cluster)"</span>,</span>
-<span id="cb94-13"><a href="#cb94-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"MAE (filings)"</span>,</span>
-<span id="cb94-14"><a href="#cb94-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Model"</span></span>
-<span id="cb94-15"><a href="#cb94-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb94-16"><a href="#cb94-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
-<span id="cb94-17"><a href="#cb94-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb94-18"><a href="#cb94-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>,</span>
-<span id="cb94-19"><a href="#cb94-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>)</span>
-<span id="cb94-20"><a href="#cb94-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(spatial_results, <span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">factor</span>(fold), <span class="at">y =</span> MAE, <span class="at">fill =</span> model)) <span class="sc">+</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"dodge"</span>) <span class="sc">+</span></span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb90-4"><a href="#cb90-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">c</span>(</span>
+<span id="cb90-5"><a href="#cb90-5" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Model 5"</span> <span class="ot">=</span> <span class="st">"#3182bd"</span>,</span>
+<span id="cb90-6"><a href="#cb90-6" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Model 6"</span> <span class="ot">=</span> <span class="st">"#31a354"</span></span>
+<span id="cb90-7"><a href="#cb90-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb90-8"><a href="#cb90-8" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb90-9"><a href="#cb90-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb90-10"><a href="#cb90-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Spatial Cross-Validation MAE Across Folds"</span>,</span>
+<span id="cb90-11"><a href="#cb90-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Comparing Model 5 (full + lags) vs. Model 6 (reduced + lags)"</span>,</span>
+<span id="cb90-12"><a href="#cb90-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Spatial Fold (k-means cluster)"</span>,</span>
+<span id="cb90-13"><a href="#cb90-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"MAE (filings)"</span>,</span>
+<span id="cb90-14"><a href="#cb90-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Model"</span></span>
+<span id="cb90-15"><a href="#cb90-15" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb90-16"><a href="#cb90-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">13</span>) <span class="sc">+</span></span>
+<span id="cb90-17"><a href="#cb90-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb90-18"><a href="#cb90-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"top"</span>,</span>
+<span id="cb90-19"><a href="#cb90-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>)</span>
+<span id="cb90-20"><a href="#cb90-20" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -2404,9 +2457,13 @@ F-statistic:  1139 on 5 and 8596 DF,  p-value: &lt; 2.2e-16</code></pre>
 </div>
 </div>
 </div>
-
-
 </section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>We present Model 6 as our final model, which utilizes a reduced variable set to include aveerage pre-pandemic eviction filings, percent non-white resident households, crime counts, and lagged eviction counts both by one month and by two months as our final model. This indicates that crime counts and the past history of evictions in a tract are strong indicators of whether evictions will occur in the future, which reinforces that evictions within a community perpetuate cycles of crime, poverty, and disinvestment that only contribute to additional risk of evictions in the future.</p>
+
+
 </section>
 </section>
 

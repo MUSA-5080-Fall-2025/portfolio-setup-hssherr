@@ -44,6 +44,10 @@ website:
             text: "Assignment 4: Spatial Predictive Analysis"
           - href: assignments/assignment5/Sywulak-Herr_Henry_assignment5.qmd
             text: "Assignment 5: Space-Time Prediction"
+          - href: assignments/final/MUSA-5080-final-script.qmd
+            text: "Final Project - Appendix"
+          - href: assignments/final/MUSA-5080-final-presentation.qmd
+            text: "Final Project - Presentation"
 format:
   html:
     theme: cosmo

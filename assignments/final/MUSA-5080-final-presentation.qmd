@@ -21,7 +21,7 @@ In the last year, 13,499 eviction claims have been filed against households in P
 
 -   Families facing eviction experience ongoing housing instability, often relocating to lower-quality or disadvantaged areas
 
-##
+## 
 
 ![](images/etractrace.png){fig-align="center" width="100%"}
 
@@ -38,35 +38,38 @@ How can we better predict where evictions will occur, so that we can effectively
 -   Encourage construction of more affordable housing
 
 ## Data Sources and Method
+
 ::::: columns
 ::: {.column width="50%"}
 ![](images/data1.png){fig-align="center" width="100%"}
 :::
+
 ::: {.column width="50%"}
-- Joined by Census tract GEOID and month, using 2020 tracts as the spatial base
-- Trained on 2022-2023 data to predict 2024 outcomes
+-   Joined by Census tract GEOID and month, using 2020 tracts as the spatial base
+-   Trained on 2022-2023 data to predict 2024 outcomes
 :::
 :::::
 
-## Our Model 
-We used a linear regression model for our prediction for transparency and ease of interpretation. Linear regression worked well with the size of the dataset, standardized nature of measurements, and predictors with known relationships in eviction literature. It is a stable model that avoids over-fitting. Fundamentally, the iterative and transparent nature of our method is optimal for policy-makers and mitigating equity concerns. 
+## Our Model
+
+We used a linear regression model for our prediction for transparency and ease of interpretation. Linear regression worked well with the size of the dataset, standardized nature of measurements, and predictors with known relationships in eviction literature. It is a stable model that avoids over-fitting. Fundamentally, the iterative and transparent nature of our method is optimal for policy-makers and mitigating equity concerns.
 
 ## Exploratory Spatial Analysis
+
 ::: {.slide style="overflow-y:scroll; height: 100%;"}
-| ![](images/ebytract.png) | ![](images/mva.png) | 
-|---------------|---------------|---------------|
-| ![](images/crime.png) | ![](images/hca.png) | 
+|                       |                     |     |
+|-----------------------|---------------------|-----|
+| ![](images/crime.png) | ![](images/hca.png) |     |
 :::
 
-
 ## Models
-- Model 0: Baseline (MAE: 1.382)
-- Model 1: + Demographic factors (MAE: 1.840)
-- Model 2: + Crime (MAE 1.834)
-- Model 3: + Housing Counseling Agency distance (1.832)
-- Model 4: + Market Value Analysis Ranking (1.821)
-- Model 5: + Eviction lags (1.672)
 
+-   Model 0: Baseline (MAE: 1.382)
+-   Model 1: + Demographic factors (MAE: 1.840)
+-   Model 2: + Crime (MAE 1.834)
+-   Model 3: + Housing Counseling Agency distance (1.832)
+-   Model 4: + Market Value Analysis Ranking (1.821)
+-   Model 5: + Eviction lags (1.672)
 
 ## Model Performance
 
@@ -80,6 +83,17 @@ We used a linear regression model for our prediction for transparency and ease o
 
 ![](images/error.png){fig-align="center" width="100%"}
 
+## Future Considerations
+
+![](images/temp.png){fig-align="center" width="100%"}
+## Future Considerations
+- Explore impact of policy changes, economic shifts, major events, or shifting social attitudes and wrap into future modeling
+- Include more specific/accurate temporal variables
+- Fold in rolling averages to smooth out the past to help predict the future
+
+
 ## Conclusion
 
-Eviction lags were the strongest factor out of our linear regression models, with an MAE of 1.672. We therefore recommend this model to the City to help it reach its policy goals.
+We present Model 6 as our final model, which utilizes a reduced variable set to include aveerage pre-pandemic eviction filings, percent non-white resident households, crime counts, and lagged eviction counts both by one month and by two months as our final model. This indicates that crime counts and the past history of evictions in a tract are strong indicators of whether evictions will occur in the future, which reinforces that evictions within a community perpetuate cycles of crime, poverty, and disinvestment that only contribute to additional risk of evictions in the future.
+
+
